@@ -165,6 +165,20 @@ Reusable workflows live in `.claude/commands/` and are committed to git.
 
 ---
 
+## Session Wrap
+
+Run this before ending any EXECUTION mode session. Takes 2-3 minutes.
+
+- [ ] **Now.md current** — Active task reflects where you actually stopped. If mid-deliverable, note what's done and what's next
+- [ ] **Design questions logged** — Any design questions that came up during implementation are in Now.md's open questions (not resolved inline)
+- [ ] **Tests green** — If you made code changes, the test suite passes. Don't leave a session with failing tests if you can avoid it
+- [ ] **Technical design doc updated** — If you changed architecture, data model, or interfaces, the doc reflects it
+- [ ] **Commit** — All code and doc changes committed. Work-in-progress is fine as a commit — uncommitted changes are not
+
+If you're mid-deliverable and stopping for the day, a short note in Now.md ("Finished tasks 1-3 of spec X, task 4 is next, tests green") is worth more than a perfect commit message.
+
+---
+
 ## References
 
 - [Boris Cherny's team tips thread](https://www.threads.com/@boris_cherny/post/DUMZr4VElyb)

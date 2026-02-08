@@ -122,6 +122,20 @@ Canonical sources (when stated in two places, the canonical source wins):
 
 ---
 
+## Session Wrap
+
+Run this before ending any DESIGN mode session. Takes 2-3 minutes and saves the next session from starting blind.
+
+- [ ] **Decisions logged** — Every decision made this session has an entry in Decisions.md (date, layer, what/why/deprecated/revisit-if)
+- [ ] **SettledDesign.md updated** — Anything that moved from Speculative to Established is written back
+- [ ] **Now.md current** — Active question reflects where you actually stopped (not where you planned to stop). Open questions backlog includes anything that came up and wasn't resolved
+- [ ] **Mode correct** — If you're switching to EXECUTION next, Now.md says so
+- [ ] **Commit** — All doc changes committed with a descriptive message
+
+If you skip this, the next session starts with stale context and you'll spend 15 minutes reconstructing what you decided.
+
+---
+
 ## If You Do Only Two Things
 
 1. Keep **Now.md** current (active question + mode + open questions)

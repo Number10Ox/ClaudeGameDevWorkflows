@@ -35,9 +35,9 @@ Solo devs or small teams building games with Claude Code. The workflows assume:
 
 Read `workflows/` to understand the patterns. Cherry-pick what helps. You don't need all of it.
 
-### Contributing learnings back
+### Contributing
 
-When a project teaches you something that improves the workflow, add it to `learnings/`. See `learnings/README.md` for format.
+See [CONTRIBUTING.md](CONTRIBUTING.md) for how to add learnings, propose workflow changes, or add recipes.
 
 ## Contents
 
@@ -59,6 +59,17 @@ When a project teaches you something that improves the workflow, add it to `lear
 | [templates/settled-design-md.md](templates/settled-design-md.md) | `Docs/SettledDesign.md` | Single source of truth for current game design |
 | [templates/game-pillars-md.md](templates/game-pillars-md.md) | `Docs/GamePillars.md` | Vision, pillars, anti-goals |
 | [templates/claude-commands/](templates/claude-commands/) | `.claude/commands/` + `.claude/agents/` | Team orchestration, builder/validator agents |
+
+### Recipes
+
+Short, situational answers to common problems. See [recipes/README.md](recipes/README.md).
+
+| Recipe | Situation |
+|--------|-----------|
+| [design-question-during-implementation](recipes/design-question-during-implementation.md) | A design question came up while you're building |
+| [new-session-lost-context](recipes/new-session-lost-context.md) | Starting a new session and Claude doesn't remember anything |
+| [stuck-on-design-question](recipes/stuck-on-design-question.md) | Going in circles on a design decision |
+| [external-llm-gave-you-code](recipes/external-llm-gave-you-code.md) | ChatGPT/Gemini generated schemas or code for your project |
 
 ### Learnings
 
