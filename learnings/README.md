@@ -43,3 +43,13 @@ ChatGPT proposed a `discrepancy` field where agent testimony contradicts the obj
 **Rule extracted:** Good ideas from external LLMs come embedded in a lot of redundant/harmful output. The extraction step (bring transcript to Claude Code, assess against existing design) is where the value is created.
 
 **Workflow impact:** Validates the crosscheck workflow pattern: external conversation → bring to Claude Code → extract/discard.
+
+---
+
+### 2026-02-07 (Context Drift): Scenario holdouts prevent self-validating tests
+
+Reading about StrongDM's "dark factory" approach surfaced a transferable idea: keep end-to-end scenarios separate from unit tests, like ML holdout sets. Unit tests co-located with code let the builder agent write tests that match its own implementation (circular validation). Scenarios written in plain language — describing a complete player experience from INTAKE through DEBRIEF — validate that the system produces the intended experience, not just that the code does what the code says.
+
+**Rule extracted:** Write game scenarios as plain-language experience descriptions, separate from `tests/`. They're design-level validation ("did the player learn what we intended?"), not implementation-level testing ("does this function return the right value?").
+
+**Workflow impact:** Added "Execution Readiness Gate" with scenario check to the engineering workflow. Scenario format and location TBD — concept is validated, mechanics need a project to flesh out.

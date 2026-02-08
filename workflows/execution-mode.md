@@ -20,6 +20,19 @@ Work in deliverables — discrete chunks with clear acceptance criteria.
 
 ---
 
+## Execution Readiness Gate
+
+Before switching from DESIGN to EXECUTION mode, check that the slice is fully specified. If any of these fail, stay in DESIGN and resolve them first.
+
+- [ ] **Acceptance criteria defined** — every deliverable has concrete, testable criteria (not "make it work")
+- [ ] **Unknowns resolved or deferred** — no open design questions block the implementation. Any that remain are explicitly logged and stubbed around
+- [ ] **Constraints pinned** — project constraints (type safety, purity, determinism, etc.) are documented and non-negotiable
+- [ ] **Scenarios written** (when applicable) — end-to-end player experience descriptions that validate the slice works as intended, kept separate from unit tests
+
+> **Adapt this:** The specific checks depend on your project. A narrative game might add "dialogue trees reviewed." A multiplayer game might add "networking assumptions validated." The principle is: EXECUTION should be able to run without design back-and-forth.
+
+---
+
 ## Plan First, Then Implement
 
 Start every complex task in plan mode. Pour energy into the plan so implementation can be one-shot.
