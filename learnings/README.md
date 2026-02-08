@@ -55,3 +55,13 @@ Story mapping (user journey → walking skeleton → deliverables) and behaviora
 **Rule extracted:** The circular validation risk with AI builders isn't solved by file separation — it's solved by authorship separation. You define what the player should experience (behavioral specs), Claude implements it. Both can live in the same repo. Don't add ceremony that doesn't earn its keep.
 
 **Workflow impact:** Added Story Mapping and Behavioral Specs sections to the engineering workflow. Replaced "scenario holdout" framing with human-authored behavioral specs in the Execution Readiness Gate.
+
+---
+
+### 2026-02-07 (Context Drift): Crosscheck refined behavioral specs with five additions
+
+ChatGPT crosscheck on the behavioral specs / story mapping framing validated the core approach and surfaced five useful additions: (1) invariants and property tests for rules that must always hold, complementing example-based specs; (2) spec freeze during EXECUTION to prevent "boiled frog" drift; (3) red-teaming specs before implementation ("list ambiguity points"); (4) checkpoints within larger stories instead of shrinking story size; (5) sacred contract tests — 3-5 identity-level tests that never break (core loop completes, failure is understandable, loop repeats).
+
+**Rule extracted:** The crosscheck workflow works for methodology questions too, not just game design. Concept-level critique from an external LLM catches gaps that are hard to see from inside the workflow you just built.
+
+**Workflow impact:** Added invariants, spec freeze, red team, checkpoints, and sacred contract tests to the engineering workflow.

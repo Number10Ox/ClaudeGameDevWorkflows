@@ -14,9 +14,21 @@ Work in deliverables — discrete chunks with clear acceptance criteria.
 
 1. **"Start [deliverable]"** — begin planning
 2. **Plan** — use plan mode or `/plan_with_team` to decompose into tasks
-3. **Implement** — builder agents execute tasks, validator agents verify
+3. **Implement with checkpoints** — builder agents execute tasks, validator agents verify. For larger stories, define checkpoint gates (see below)
 4. **"Sign off"** — triggers the sign-off checklist
 5. **Move on** — start next deliverable
+
+### Checkpoints (for larger deliverables)
+
+Don't shrink stories to reduce risk — add validation gates within them. Claude does not proceed past a checkpoint without you validating behavior.
+
+Typical checkpoints:
+1. **Plumbing compiles** — types, interfaces, and function signatures exist, project builds
+2. **First playable loop** — the minimal path works end-to-end
+3. **Edge cases handled** — failure states, empty states, boundary conditions
+4. **Polish** — final UX, messaging, cleanup
+
+> **Adapt this:** Your checkpoints depend on the deliverable. A UI story might gate on "renders with stub data" → "handles real data" → "handles errors." An engine story might gate on "pure function passes basic test" → "handles edge cases" → "deterministic under all seeds."
 
 ---
 
@@ -86,6 +98,35 @@ Focus on player-observable behavior, not implementation details:
 
 Claude writes unit tests for the implementation. You write behavioral specs for the experience. Both live in the codebase — the separation is authorship, not location.
 
+### Invariants and property tests
+
+Some game behaviors are better validated as rules that must always hold than as specific examples:
+
+- **Invariants:** "Every STRESSED or BREACHED outcome has a non-empty cause" / "Score never increases when a protocol fails"
+- **Property tests:** "For any valid input, the resolver produces exactly 3 outcomes" / "Resolution is deterministic — same seed always produces same result"
+
+These complement behavioral specs. Examples validate specific journeys; invariants validate the system's physics. Both are human-authored.
+
+### Spec freeze during EXECUTION
+
+Once a slice enters EXECUTION, its behavioral specs are frozen. If Claude suggests changing the spec during implementation:
+
+- Claude must present it as **"Proposed spec change"** with tradeoffs — not quietly update criteria
+- Any change requires an explicit note in Decisions.md
+- If the spec needs significant revision, stop and return to DESIGN mode
+
+This prevents "boiled frog" design drift where the AI nudges you into accepting a slightly different interpretation across many small adjustments.
+
+### Red-teaming your spec
+
+Before Claude implements, ask it to attack the spec:
+
+- "List ambiguity points in this spec"
+- "What behaviors are underspecified?"
+- "What's the minimal implementation that passes the spec but feels wrong to players?"
+
+This keeps you as spec owner while using the AI to widen coverage. Fix the spec, then freeze it.
+
 ### Circular validation risk
 
 When Claude writes both code and tests, the tests can match the implementation rather than the intent. Your behavioral specs are the countermeasure — they come from a different source (you) than the implementation (Claude). Review Claude's unit tests for whether they test the right thing, not just whether they pass.
@@ -145,6 +186,16 @@ The #1 tip for quality output (Boris Cherny): always give Claude a way to verify
 - If tests fail: fix and re-run — closed loop until green
 - Don't mark work as done until tests pass
 - For behavioral claims: "Prove it works" — diff outputs or write a test that demonstrates the behavior
+
+### Sacred contract tests
+
+Keep a small set (3-5) of tests that represent the game's identity. These run constantly and never break:
+
+- Core loop completes (boot → meaningful choice → consequence → debrief)
+- Failure state is understandable (player knows why they lost)
+- Core loop repeats (can start a new round)
+
+These are your walking skeleton tests. If they break, everything stops until they're fixed. They're the "is the game still a game?" check.
 
 ---
 
@@ -219,6 +270,7 @@ Reusable workflows live in `.claude/commands/` and are committed to git.
 - **Restart:** "Knowing everything you know now, scrap this and implement the elegant solution"
 - **Spec first:** Write detailed specs and reduce ambiguity before handing work off
 - **Hands-off bug fixing:** Paste an error or failing test and say "fix." Don't micromanage how.
+- **Red team:** Before implementing, ask Claude to attack your spec: "List ambiguity points," "What's the minimal passing but wrong implementation?" Fix the spec first, then implement.
 
 ---
 
