@@ -15,11 +15,13 @@ These workflows solve specific problems that come up when using AI as a long-run
 
 ## Who It's For
 
-Solo devs or small teams building games with Claude Code. The workflows assume:
+Devs and small teams building games with AI assistance. The workflows assume:
 - You're doing both game design and engineering (or at least reviewing both)
 - You want Claude to enforce process discipline, not just write code
 - You're iterating over multiple sessions — this isn't a one-shot project
 - You care about not losing design decisions between sessions
+
+The workflow principles are the same whether you're solo or on a cross-disciplinary team. Teams add coordination norms (ownership, sign-offs, handoffs) on top of the same foundation — see [Team Considerations](workflows/execution-mode.md#team-considerations) in the engineering workflow.
 
 ## How to Use It
 
@@ -78,6 +80,10 @@ Cross-project observations that improve the workflows. See [learnings/README.md]
 ## Origin
 
 Extracted from [Context Drift](https://github.com/jedwards/ContextDrift), a Mythos/SCP-themed containment game where AI agents use concept sequences to counter anomalies. The workflows were developed over multiple design and engineering sessions and battle-tested against real scope creep, decision loss, and AI-generated noise.
+
+## Integrations
+
+This playbook is tool-agnostic. If you use a deliverable execution tool (like [dev-workflow-assistant](https://github.com/Number10Ox/dev-workflow-assistant) for packet-based execution with drift tracking), the principles here define *what good looks like* while the tool enforces the mechanics.
 
 ## The Core Idea
 

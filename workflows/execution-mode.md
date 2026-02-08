@@ -305,6 +305,57 @@ If you're mid-deliverable and stopping for the day, a short note in Now.md ("Fin
 
 ---
 
+## Team Considerations
+
+The workflow principles above apply whether you're solo or on a cross-disciplinary team. What changes with teams is coordination, not philosophy.
+
+### Spec ownership
+
+Decide who can author and modify specs for each surface area. Design owns player-facing behavior and UX acceptance criteria. Engineering owns architecture, performance budgets, and test strategy. Narrative, art, and audio own their surfaces and constraints. Conflicts resolve via a Decisions.md entry with explicit tradeoffs — not by whoever edits the file last.
+
+### Sign-off gates
+
+Solo devs validate implicitly. Teams need explicit sign-off as part of the Execution Readiness Gate and the Deliverable Sign-Off Checklist. Keep it lightweight: a "Design-approved / Eng-approved / UX-approved" column in your deliverables table (or metadata in your execution tool) is enough. Don't build an approval workflow — just make it visible who has reviewed.
+
+### Doc ownership
+
+Canon docs (SettledDesign.md, Now.md, Decisions.md) need clear edit rights when multiple people touch them. A simple rule: anyone can propose changes, but the doc owner merges them. Now.md is owned by whoever is actively working. SettledDesign.md changes go through the write-back ritual. Decisions.md is append-only — anyone can add entries.
+
+> **Adapt this:** The level of coordination overhead depends on team size. Two people might just talk. Five people need explicit ownership. Twenty people need a tool. Don't add process faster than you add people.
+
+---
+
+## AI Agent Roles
+
+AI agents (subagents, worktree sessions, or [agent teams](https://code.claude.com/docs/en/agent-teams)) are collaborators with clear I/O contracts. They extend the builder/validator pattern to multi-agent coordination.
+
+### The principle
+
+**Agents propose, humans (or lead agents) decide.** An agent produces patch proposals, risk callouts, and validation results. It does not modify canon docs, merge to main, or change acceptance criteria without explicit approval. This matches the spec-freeze discipline: the spec is the contract, and no agent unilaterally changes the contract.
+
+### Agent roles
+
+- **Builder agent:** Implements against a spec. Outputs code + tests. Bounded by a deliverable or task.
+- **Validator agent:** Read-only review. Checks implementation against acceptance criteria, constraints, and canon docs. Reports specific issues.
+- **Red team agent:** Attacks a spec before implementation. Finds ambiguities, underspecified behaviors, minimal-passing-but-wrong implementations.
+- **Reviewer agent:** Post-implementation. Checks patch against behavioral specs and invariants.
+
+### Agent contracts (I/O boundaries)
+
+When delegating to an agent — human-to-AI or AI-to-AI — define the contract:
+
+- **Inputs:** Which files/components the agent reads or modifies
+- **Outputs:** What artifacts it produces (code, tests, reports)
+- **Invariants:** What must hold before and after (sacred contracts, project constraints)
+- **Stop points:** Where the agent pauses for validation
+- **Escalation:** What the agent can decide vs. what it must surface for human review
+
+This makes AI-to-AI collaboration legible to humans. When a lead agent delegates to teammates, the contract is the same structure as a deliverable packet — bounded scope, clear acceptance criteria, explicit stop points.
+
+> **Adapt this:** Solo devs use subagents informally. Small teams might formalize agent roles for parallel worktree development. Larger teams might use agent teams with a lead orchestrator. Scale the formality to the coordination cost.
+
+---
+
 ## References
 
 - [Boris Cherny's team tips thread](https://www.threads.com/@boris_cherny/post/DUMZr4VElyb)

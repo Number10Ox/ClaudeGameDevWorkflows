@@ -65,3 +65,15 @@ ChatGPT crosscheck on the behavioral specs / story mapping framing validated the
 **Rule extracted:** The crosscheck workflow works for methodology questions too, not just game design. Concept-level critique from an external LLM catches gaps that are hard to see from inside the workflow you just built.
 
 **Workflow impact:** Added invariants, spec freeze, red team, checkpoints, and sacred contract tests to the engineering workflow.
+
+---
+
+### 2026-02-07 (Context Drift): Workflow principles scale to teams — coordination changes, not philosophy
+
+When considering whether ClaudeGameDevWorkflows should be "solo" vs "team," two rounds of crosscheck with ChatGPT converged on the same answer: the workflow principles (DESIGN/EXECUTION modes, canon docs, spec-as-contract, behavioral specs, write-back) apply identically to teams. What teams add is coordination norms — spec ownership, sign-off gates, doc edit rights — not a different workflow philosophy. The "solo" framing was an artifact of the origin story, not a fundamental limitation.
+
+Separately, AI agent teams (multiple Claude Code sessions coordinated by a lead) need the same contract structure as human-to-AI delegation: inputs, outputs, invariants, stop points, escalation rules. The deliverable packet pattern extends naturally to AI-to-AI communication.
+
+**Rule extracted:** Don't fork workflows for "solo vs team." Keep one spine of principles and add coordination norms as a section, not a separate track. Agents (human or AI) are collaborators with I/O contracts — the same contract structure works for all delegation patterns.
+
+**Workflow impact:** Repositioned repo as "team-ready, solo-friendly." Added Team Considerations and AI Agent Roles sections to the engineering workflow. Added Integrations pointer for execution tooling.
