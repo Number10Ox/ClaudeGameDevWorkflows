@@ -27,9 +27,70 @@ Before switching from DESIGN to EXECUTION mode, check that the slice is fully sp
 - [ ] **Acceptance criteria defined** — every deliverable has concrete, testable criteria (not "make it work")
 - [ ] **Unknowns resolved or deferred** — no open design questions block the implementation. Any that remain are explicitly logged and stubbed around
 - [ ] **Constraints pinned** — project constraints (type safety, purity, determinism, etc.) are documented and non-negotiable
-- [ ] **Scenarios written** (when applicable) — end-to-end player experience descriptions that validate the slice works as intended, kept separate from unit tests
+- [ ] **Behavioral specs written** — human-authored specs describing what the player experiences (see Story Mapping and Behavioral Specs below). These are the contract Claude implements against.
 
 > **Adapt this:** The specific checks depend on your project. A narrative game might add "dialogue trees reviewed." A multiplayer game might add "networking assumptions validated." The principle is: EXECUTION should be able to run without design back-and-forth.
+
+---
+
+## Story Mapping
+
+Story mapping organizes work by the player's journey, not by technical component. This prevents the most common AI-assisted dev failure: building technically correct systems that miss the user experience.
+
+### How it works
+
+1. **Identify personas** — who plays your game? What do they care about? (A completionist and a speedrunner experience the same game differently.)
+2. **Map the journey horizontally** — walk through what the player does, step by step, across the full experience
+3. **Slice vertically by priority** — the top row is the walking skeleton (thinnest playable path), lower rows add depth
+
+```
+Player Journey →
+[Activity 1] → [Activity 2] → [Activity 3] → [Activity 4] → [Activity 5]
+      ↓               ↓              ↓              ↓              ↓
+Skeleton:  [minimal]   [minimal]     [minimal]      [minimal]      [minimal]
+Enhance:   [richer]    [richer]      [richer]       [richer]       [richer]
+Polish:    [full]      [full]        [full]         [full]         [full]
+```
+
+### Why this matters with AI
+
+Claude defaults to technical decomposition ("build the engine, then the UI, then the data layer"). Story mapping forces user-journey decomposition ("build the thinnest path a player can walk through, then deepen it"). This produces playable slices earlier and catches UX problems before you've built a technically complete but experientially broken system.
+
+### Where it lives
+
+The story map is a DESIGN-mode artifact that bridges to EXECUTION. It can live in your technical design doc, in SettledDesign.md, or as a standalone `Docs/StoryMap.md` — wherever your deliverable breakdown lives. The map generates the deliverables, not the other way around.
+
+> **Adapt this:** Your journey activities are game-specific. A roguelike maps: select loadout → enter dungeon → encounter rooms → boss → extract → upgrade. A narrative game maps: receive quest → explore → dialogue → choice → consequence → reflect.
+
+---
+
+## Behavioral Specs (Specification by Example)
+
+Write behavioral specs before implementation. They describe what the player experiences in concrete terms — specification and test in one artifact.
+
+### The principle
+
+**Human writes the spec, Claude implements against it.** This is the natural division of labor: you define intent (what should happen from the player's perspective), Claude handles implementation (how to make it happen in code). The spec is the contract.
+
+This replaces formal BDD/Gherkin ceremony with something lighter. A behavioral spec can be:
+- Acceptance criteria concrete enough to be directly testable
+- A test file that reads like a user flow (written by you, not Claude)
+- A scenario in your technical design doc with specific inputs and expected outcomes
+
+### What to specify
+
+Focus on player-observable behavior, not implementation details:
+
+- **Good:** "When all three protocols are BREACHED, the Case Summary banner says 'FULL BREACH' and the Unresolved section lists at least one open threat"
+- **Bad:** "The `calculateOutcome()` function returns `{ status: 'breached' }` when all entries have `held: false`"
+
+Claude writes unit tests for the implementation. You write behavioral specs for the experience. Both live in the codebase — the separation is authorship, not location.
+
+### Circular validation risk
+
+When Claude writes both code and tests, the tests can match the implementation rather than the intent. Your behavioral specs are the countermeasure — they come from a different source (you) than the implementation (Claude). Review Claude's unit tests for whether they test the right thing, not just whether they pass.
+
+> **Adapt this:** The level of formality depends on your project. For a solo prototype, acceptance criteria in your design doc might be enough. For a larger project, dedicated test files with scenario descriptions might be worth the investment. Don't add ceremony that doesn't earn its keep.
 
 ---
 

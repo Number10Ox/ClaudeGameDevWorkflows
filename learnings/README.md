@@ -46,10 +46,12 @@ ChatGPT proposed a `discrepancy` field where agent testimony contradicts the obj
 
 ---
 
-### 2026-02-07 (Context Drift): Scenario holdouts prevent self-validating tests
+### 2026-02-07 (Context Drift): Human writes the spec, AI implements against it
 
-Reading about StrongDM's "dark factory" approach surfaced a transferable idea: keep end-to-end scenarios separate from unit tests, like ML holdout sets. Unit tests co-located with code let the builder agent write tests that match its own implementation (circular validation). Scenarios written in plain language — describing a complete player experience from INTAKE through DEBRIEF — validate that the system produces the intended experience, not just that the code does what the code says.
+StrongDM's "dark factory" article proposed keeping test scenarios separate from code as "holdout sets" to prevent circular validation. Initial reaction was to create a new `scenarios/` folder outside the codebase. On reflection, this misses the point — BDD-style behavioral specs already solve this problem when the **human writes the spec and Claude implements against it**. The separation that matters is authorship, not location.
 
-**Rule extracted:** Write game scenarios as plain-language experience descriptions, separate from `tests/`. They're design-level validation ("did the player learn what we intended?"), not implementation-level testing ("does this function return the right value?").
+Story mapping (user journey → walking skeleton → deliverables) and behavioral specs (specification by example, test-first) are pre-AI practices that are MORE important with AI, not less. Claude defaults to technical decomposition and can write tests that match its own implementation. Human-authored behavioral specs and story-map-driven work ordering are the countermeasures.
 
-**Workflow impact:** Added "Execution Readiness Gate" with scenario check to the engineering workflow. Scenario format and location TBD — concept is validated, mechanics need a project to flesh out.
+**Rule extracted:** The circular validation risk with AI builders isn't solved by file separation — it's solved by authorship separation. You define what the player should experience (behavioral specs), Claude implements it. Both can live in the same repo. Don't add ceremony that doesn't earn its keep.
+
+**Workflow impact:** Added Story Mapping and Behavioral Specs sections to the engineering workflow. Replaced "scenario holdout" framing with human-authored behavioral specs in the Execution Readiness Gate.
