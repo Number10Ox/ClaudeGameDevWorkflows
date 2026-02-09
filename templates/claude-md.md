@@ -71,6 +71,21 @@ Check `Docs/Now.md` for the current mode:
 - If something seems missing, create a "Missing Inventory" list and propose new solutions
 - If older ideas are found, quarantine them as "Candidate re-adoptions (NOT ACTIVE)"
 
+## Write-Back Before Session End or Context Risk
+
+Context compaction loses in-session details. To survive it, **write back to docs before losing context**:
+
+1. **After every significant change** (new decision, prototype update, design resolution):
+   - Update `Docs/Now.md` current state to reflect what just happened
+   - Add a `Docs/Decisions.md` entry if a decision was made (D-NNN format)
+   - Update relevant technical/design docs if types, architecture, or settled elements changed
+
+2. **When the user mentions compaction risk** (e.g., "99% context", "running out of context"):
+   - Immediately write back ALL pending state to docs before doing anything else
+   - Prioritize Now.md (it's the session-start file) and Decisions.md (append-only, never loses history)
+
+3. **Rule: docs must always be current enough that a fresh session reading only the Session Start files can pick up where we left off.** If something is only in conversation context and not in a doc, it's at risk.
+
 ## Game Design Constraints
 
 > **Adapt this:** These are your non-negotiable game design rules. Examples below.
