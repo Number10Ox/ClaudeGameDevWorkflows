@@ -86,6 +86,8 @@ Context compaction loses in-session details. To survive it, **write back to docs
 
 3. **Rule: docs must always be current enough that a fresh session reading only the Session Start files can pick up where we left off.** If something is only in conversation context and not in a doc, it's at risk.
 
+4. **Proactive context management:** Your context window will be automatically compacted as it approaches its limit, allowing you to continue working indefinitely. Do not stop tasks early due to context budget concerns. As you approach the context limit, proactively write back all pending state to docs before the window refreshes. Always complete tasks fully rather than stopping early.
+
 ## Game Design Constraints
 
 > **Adapt this:** These are your non-negotiable game design rules. Examples below.
