@@ -116,6 +116,22 @@ Tests are part of implementation, not an afterthought.
 
 ---
 
+## LLM Mock Requirement
+
+**No automated test at any layer may call a real LLM API.**
+
+Games using LLM-driven agents (NPC behavior, narrative generation, etc.) must ensure all automated tests run against mock/canned responses, never live API calls.
+
+- **Layer 1** — typically no issue; structural tests use pure functions and static data with no LLM dependency.
+- **Layers 2 & 3** — Playwright tests run against a live server. If the server calls an LLM during normal operation, it must support a mock mode:
+  - The server accepts a startup flag or environment variable (e.g., `USE_MOCK_LLM=true`) to swap the real LLM client for a mock that returns canned/deterministic responses
+  - Mock implementation lives in a test fixture (e.g., `tests/fixtures/mockLlmClient.ts`)
+  - Canned responses must match the real output shape so flow tests exercise actual parsing paths
+  - If a new test scenario needs a response shape not yet in the fixtures, add it to the fixture file — never call the real API
+- **Rationale:** LLM calls are slow, non-deterministic, and cost money. Tests that depend on live LLM output are flaky by definition and cannot run in CI without API keys.
+
+---
+
 ## Handling Test Failures
 
 When a test fails, the question is: **did the code drift from the spec, or did the spec change?**
