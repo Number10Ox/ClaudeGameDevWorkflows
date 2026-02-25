@@ -51,6 +51,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for how to add learnings, propose workflo
 | [workflows/execution-mode.md](workflows/execution-mode.md) | Engineering process: plan-first, verification loops, sign-off checklists, parallel dev |
 | [workflows/llm-crosscheck.md](workflows/llm-crosscheck.md) | When and how to use external LLMs (ChatGPT, Gemini) to stress-test your design |
 | [workflows/ui-specification.md](workflows/ui-specification.md) | UI spec workflow: when to write specs, the implementation contract, verification process |
+| [workflows/ui-testing.md](workflows/ui-testing.md) | UI testing pyramid: structural assertions, functional flows, visual regression — spec-driven, Claude-written |
 
 ### Templates
 
