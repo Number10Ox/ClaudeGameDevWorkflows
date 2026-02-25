@@ -50,6 +50,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for how to add learnings, propose workflo
 | [workflows/design-mode.md](workflows/design-mode.md) | Game design process: layers, one-question discipline, write-back ritual, perspective passes |
 | [workflows/execution-mode.md](workflows/execution-mode.md) | Engineering process: plan-first, verification loops, sign-off checklists, parallel dev |
 | [workflows/llm-crosscheck.md](workflows/llm-crosscheck.md) | When and how to use external LLMs (ChatGPT, Gemini) to stress-test your design |
+| [workflows/ui-specification.md](workflows/ui-specification.md) | UI spec workflow: when to write specs, the implementation contract, verification process |
 
 ### Templates
 
@@ -60,6 +61,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for how to add learnings, propose workflo
 | [templates/decisions-md.md](templates/decisions-md.md) | `Docs/Decisions.md` | Chronological decision log with rationale |
 | [templates/settled-design-md.md](templates/settled-design-md.md) | `Docs/SettledDesign.md` | Single source of truth for current game design |
 | [templates/game-pillars-md.md](templates/game-pillars-md.md) | `Docs/GamePillars.md` | Vision, pillars, anti-goals |
+| [templates/screen-spec.md](templates/screen-spec.md) | `Docs/screen-spec-[name].md` | UI contract for a screen — layout, elements, data, states, navigation |
 | [templates/claude-commands/](templates/claude-commands/) | `.claude/commands/` + `.claude/agents/` | Team orchestration, builder/validator agents |
 
 ### Recipes
