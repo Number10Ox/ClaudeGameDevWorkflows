@@ -13,10 +13,21 @@ Work in deliverables — discrete chunks with clear acceptance criteria.
 ### The Cycle
 
 1. **"Start [deliverable]"** — begin planning
-2. **Plan** — use plan mode or `/plan_with_team` to decompose into tasks
+2. **Plan** — write acceptance criteria and plan to deliverable files, or use `/plan_with_team` to orchestrate
 3. **Implement with checkpoints** — builder agents execute tasks, validator agents verify. For larger stories, define checkpoint gates (see below)
 4. **"Sign off"** — triggers the sign-off checklist
 5. **Move on** — start next deliverable
+
+### Deliverable Files
+
+Each deliverable gets its own files. These are the agreement surface — not the chat window, not a popup.
+
+- **`Docs/deliverables/D{N}-acceptance.md`** — acceptance criteria, non-goals, open questions. Written during DESIGN mode, iterated in the editor, locked before EXECUTION starts.
+- **`Docs/deliverables/D{N}-plan.md`** — implementation plan. Written after ACs are locked. Reviewed in the editor.
+
+The D{N} numbering aligns with Decisions.md entries (D-001, D-002, etc.) for traceability. Acceptance criteria are the most important thing to agree on. Everything else follows from them.
+
+> **Adapt this:** The `Docs/deliverables/` path and D{N} naming are conventions. Use whatever fits your project structure. The principle is: acceptance criteria and plans live in files the user can review in their editor, not in chat scroll.
 
 ### Checkpoints (for larger deliverables)
 
@@ -36,7 +47,8 @@ Typical checkpoints:
 
 Before switching from DESIGN to EXECUTION mode, check that the slice is fully specified. If any of these fail, stay in DESIGN and resolve them first.
 
-- [ ] **Acceptance criteria defined** — every deliverable has concrete, testable criteria (not "make it work")
+- [ ] **`D{N}-acceptance.md` exists and is agreed** — concrete, testable criteria in a file the user has reviewed (not "make it work")
+- [ ] **`D{N}-plan.md` exists** — implementation plan written to a file, not a chat scroll
 - [ ] **Unknowns resolved or deferred** — no open design questions block the implementation. Any that remain are explicitly logged and stubbed around
 - [ ] **Constraints pinned** — project constraints (type safety, purity, determinism, etc.) are documented and non-negotiable
 - [ ] **Behavioral specs written** — human-authored specs describing what the player experiences (see Story Mapping and Behavioral Specs below). These are the contract Claude implements against.
@@ -287,7 +299,8 @@ Reusable workflows live in `.claude/commands/` and are committed to git.
 
 - **Voice dictation:** fn fn on macOS. You speak 3x faster than you type, and prompts get more detailed.
 - **Status line:** Use `/statusline` to always show context usage and current git branch
-- **Permissions:** Use `/permissions` to pre-allow safe bash commands. Commit to `.claude/settings.json`.
+- **Permissions:** Use `/permissions` to pre-allow safe bash commands. Commit to `.claude/settings.json`. See [settings template](../templates/settings-json.md).
+- **Audio hooks:** Wire up TTS notifications for Stop, SubagentStop, and Notification events. See [hook templates](../templates/claude-hooks/).
 
 ---
 

@@ -57,12 +57,39 @@ Check `Docs/Now.md` for the current mode:
 - [e.g. All game state is immutable — mutations return new objects]
 - [e.g. No `any` types. Use `unknown` + type guards if needed.]
 
+## Deliverable Workflow
+
+Each deliverable gets two files in `Docs/deliverables/`:
+- `D{N}-acceptance.md` — acceptance criteria (written during planning)
+- `D{N}-plan.md` — implementation plan (written by `/plan_with_team` or manually)
+
+### Agent Team
+
+- **Builder** (`.claude/agents/team/builder.md`) — implements code + tests. All implementation goes through builders.
+- **Validator** (`.claude/agents/team/validator.md`) — read-only verification. Inspects, runs tests, reports PASS/FAIL. Never modifies files.
+
+Typical per-task flow: Builder implements → Validator verifies → fix if needed → re-verify.
+
+### Orchestration
+
+Use `/plan_with_team` to plan and orchestrate deliverable execution with builder/validator agents.
+
 ## Testing
 
 - Test file naming: `[ModuleName].test.ts`
 - Test method naming: `describe("functionName")` / `it("should do X when Y")`
 - [e.g. All engine functions must have tests]
 - [e.g. Use deterministic seeds for any randomness in tests]
+
+### Sacred Contract Tests
+
+Each major subsystem gets 3-5 identity tests that define "what this system IS." These tests:
+- Never break (if they break, the system's identity has changed)
+- Are written first, before implementation details
+- Serve as living documentation of core invariants
+- [e.g. "Core loop completes: boot → meaningful choice → consequence → debrief"]
+
+> **Adapt this:** Sacred contract tests are game-specific. Examples: "dungeon generates a valid path," "relationship value equals sum of active modifiers," "resolution is deterministic under all seeds."
 
 ## Source of Truth
 

@@ -49,17 +49,20 @@ Before planning, understand what exists:
 - Are there dependencies that need to be in place?
 
 ### 3. Write the Plan
-Create a spec document at `specs/<kebab-case-name>.md`:
+Create deliverable files:
+- **`Docs/deliverables/D{N}-acceptance.md`** — acceptance criteria (if not already written)
+- **`Docs/deliverables/D{N}-plan.md`** — the implementation plan:
+  - **Deliverable/Objective** — what this delivers
+  - **Acceptance Criteria** — reference to D{N}-acceptance.md
+  - **Relevant Files** — existing (to read/modify) and new (to create)
+  - **Implementation Tasks** — numbered, concrete, with per-task acceptance criteria. Group into phases where tasks within a phase can run in parallel.
+  - **Team Assignments** — which agents handle which tasks
+  - **Validation** — test commands, type checks
 
-- **Deliverable/Objective** — what this delivers
-- **Acceptance Criteria** — from the technical design doc or written fresh
-- **Relevant Files** — existing (to read/modify) and new (to create)
-- **Implementation Tasks** — numbered, concrete, with per-task acceptance criteria. Group into phases where tasks within a phase can run in parallel.
-- **Team Assignments** — which agents handle which tasks
-- **Validation** — test commands, type checks
+For standalone work (not tied to a deliverable), use `process/plans/plan-<name>.md` instead.
 
 ### 4. Present the Plan
-Show the plan to the user for approval. Do NOT proceed to orchestration until approved.
+Tell the user the file path so they can review in their editor. Do NOT proceed to orchestration until approved.
 
 ### 5. Orchestrate the Team
 After approval, create tasks and assign them:

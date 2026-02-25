@@ -77,3 +77,33 @@ Separately, AI agent teams (multiple Claude Code sessions coordinated by a lead)
 **Rule extracted:** Don't fork workflows for "solo vs team." Keep one spine of principles and add coordination norms as a section, not a separate track. Agents (human or AI) are collaborators with I/O contracts — the same contract structure works for all delegation patterns.
 
 **Workflow impact:** Repositioned repo as "team-ready, solo-friendly." Added Team Considerations and AI Agent Roles sections to the engineering workflow. Added Integrations pointer for execution tooling.
+
+---
+
+### 2026-02-25 (What Remains Above): Separate acceptance criteria from implementation plans
+
+Early projects put acceptance criteria and implementation plans in the same spec file, or scattered them across chat. What Remains Above evolved a D{N} file pattern: `D{N}-acceptance.md` defines what "done" looks like, `D{N}-plan.md` defines how to get there. Separating them enforces that ACs are agreed *before* a plan is written — preventing plan-first thinking where the implementation drives the requirements. The D{N} numbering aligns with Decisions.md entries for traceability.
+
+**Rule extracted:** Acceptance criteria are the most important thing to agree on. Plans follow from them, not the other way around. Separate files enforce this ordering.
+
+**Workflow impact:** Updated execution-mode.md Deliverable Flow with D{N} file pattern. Updated plan-with-team template to write deliverable files instead of specs/.
+
+---
+
+### 2026-02-25 (What Remains Above): Audio hooks transform long agent workflows
+
+Adding macOS TTS hooks (Stop, SubagentStop, Notification) to Claude Code settings means you can walk away during multi-agent orchestration and get called back when attention is needed. The SubagentStop hook extracts the agent name from the JSON payload for specific announcements. This is a quality-of-life improvement that changes how you interact with long-running agent work — you stop watching the terminal.
+
+**Rule extracted:** Lifecycle hooks for audio feedback should be part of every project's initial setup, not an afterthought.
+
+**Workflow impact:** Added hook templates and settings.json template to the templates directory. Added "Audio hooks" tip to Environment Tips in execution workflow.
+
+---
+
+### 2026-02-25 (What Remains Above): Sacred contract tests belong in CLAUDE.md, not just the workflow doc
+
+Sacred contract tests were defined in execution-mode.md but absent from the CLAUDE.md template's Testing section. Since CLAUDE.md is read every session and the workflow doc is only referenced occasionally, the most important testing concept was invisible in daily use. Moving it into the CLAUDE.md template ensures Claude applies it proactively when writing tests for new subsystems.
+
+**Rule extracted:** If a concept should influence every implementation session, it needs to be in CLAUDE.md — not just in a workflow doc that Claude reads "as needed."
+
+**Workflow impact:** Added Sacred Contract Tests subsection to the CLAUDE.md template's Testing section.

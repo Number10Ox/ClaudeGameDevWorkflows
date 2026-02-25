@@ -30,8 +30,10 @@ The workflow principles are the same whether you're solo or on a cross-disciplin
 1. Copy `templates/claude-md.md` to your project as `.claude/CLAUDE.md`
 2. Copy the document templates you need from `templates/` into your project's `Docs/` folder
 3. Copy `templates/claude-commands/` into `.claude/commands/` and `.claude/agents/`
-4. Adapt each file — look for `> **Adapt this:**` callout blocks
-5. Reference `workflows/` for how the process works
+4. Copy `templates/claude-hooks/` into `.claude/hooks/` and wire up `templates/settings-json.md` as `.claude/settings.json`
+5. Create `Docs/deliverables/` for D{N} acceptance and plan files
+6. Adapt each file — look for `> **Adapt this:**` callout blocks
+7. Reference `workflows/` for how the process works
 
 ### Referencing for an existing project
 
@@ -62,7 +64,10 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for how to add learnings, propose workflo
 | [templates/decisions-md.md](templates/decisions-md.md) | `Docs/Decisions.md` | Chronological decision log with rationale |
 | [templates/settled-design-md.md](templates/settled-design-md.md) | `Docs/SettledDesign.md` | Single source of truth for current game design |
 | [templates/game-pillars-md.md](templates/game-pillars-md.md) | `Docs/GamePillars.md` | Vision, pillars, anti-goals |
+| [templates/tdd-md.md](templates/tdd-md.md) | `Docs/TDD.md` | Technical design document — architecture, subsystems, constraints, deliverables |
 | [templates/screen-spec.md](templates/screen-spec.md) | `Docs/screen-spec-[name].md` | UI contract for a screen — layout, elements, data, states, navigation |
+| [templates/settings-json.md](templates/settings-json.md) | `.claude/settings.json` | Hooks configuration, permission overrides |
+| [templates/claude-hooks/](templates/claude-hooks/) | `.claude/hooks/` | Audio notification scripts (macOS TTS) for lifecycle events |
 | [templates/claude-commands/](templates/claude-commands/) | `.claude/commands/` + `.claude/agents/` | Team orchestration, builder/validator agents |
 
 ### Recipes
