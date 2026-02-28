@@ -49,6 +49,7 @@ Before switching from DESIGN to EXECUTION mode, check that the slice is fully sp
 
 - [ ] **`D{N}-acceptance.md` exists and is agreed** — concrete, testable criteria in a file the user has reviewed (not "make it work")
 - [ ] **`D{N}-plan.md` exists** — implementation plan written to a file, not a chat scroll
+- [ ] **Architectural alignment verified** — plan cross-referenced against Decisions.md (or your equivalent decision log). Any architectural constraint that applies to this deliverable is explicitly addressed in the plan, not assumed. The user can't be expected to catch violations of decisions you already agreed on together — this is the AI's responsibility.
 - [ ] **Unknowns resolved or deferred** — no open design questions block the implementation. Any that remain are explicitly logged and stubbed around
 - [ ] **Constraints pinned** — project constraints (type safety, purity, determinism, etc.) are documented and non-negotiable
 - [ ] **Behavioral specs written** — human-authored specs describing what the player experiences (see Story Mapping and Behavioral Specs below). These are the contract Claude implements against.
@@ -163,7 +164,9 @@ Start every complex task in plan mode. Pour energy into the plan so implementati
 
 Before presenting a plan for approval, self-review against your project's constraints.
 
-> **Adapt this:** Replace these with your project's non-negotiable constraints.
+- [ ] **Architectural alignment:** Search your decision log for all decisions that apply to this deliverable. Verify the plan doesn't violate any of them. This is not optional — the user can't be expected to catch violations of decisions you already agreed on together. This is the most common source of architectural drift in AI-assisted development: the decision was made, documented, and then forgotten during implementation.
+
+> **Adapt this:** Replace the items below with your project's non-negotiable constraints.
 
 Example (for a TypeScript game engine):
 - [ ] No `any` types — use `unknown` + type guards
@@ -283,6 +286,73 @@ Reusable workflows live in `.claude/commands/` and are committed to git.
 - **Spec first:** Write detailed specs and reduce ambiguity before handing work off
 - **Hands-off bug fixing:** Paste an error or failing test and say "fix." Don't micromanage how.
 - **Red team:** Before implementing, ask Claude to attack your spec: "List ambiguity points," "What's the minimal passing but wrong implementation?" Fix the spec first, then implement.
+
+---
+
+## Implementation Discipline
+
+Rules that prevent common failures during rendering, UI, and complex system work. These are objective correctness checks, not aesthetic judgments.
+
+### Research before trial-and-error
+
+When working with unfamiliar APIs (3D rendering, shaders, physics, audio, platform-specific features), look up the correct approach before writing code. Wrong guesses compound — each failed attempt adds complexity that makes the next attempt harder. The user's time is more expensive than research time.
+
+This applies to both web (Three.js, WebGL, Canvas) and Unity (shader graph, DOTS, addressables, platform APIs).
+
+### File size guardrails
+
+Propose splitting files at ~500 lines. When a file grows past this, it usually contains multiple concerns that should be separated. Common splits:
+- Rendering helpers vs. React/MonoBehaviour component
+- Data generation vs. runtime logic
+- LOD/pooling vs. visual construction
+- Constants/configuration vs. implementation
+
+### Named constants with rationale
+
+Critical parameters (dimensions, thresholds, ratios, material values) must be named constants with comments explaining **why**, not just what. This survives context loss across sessions.
+
+```typescript
+// BAD — magic numbers that get lost and reintroduced at wrong values
+neons.push({ sx: w * 0.82, sy: h * 0.55 });
+
+// GOOD — named, with rationale
+const NEON_INSET = 0.82;   // recessed from wall face to create groove effect via bloom
+const BRIGHT_BAND_H = 0.18; // thin accent, not solid block — 55% was too thick
+```
+
+For Unity C# projects, this overlaps with the "No tuning in code" data discipline rule — but applies even to values that aren't designer-tunable. If a value controls visual appearance, name it and explain it.
+
+### Self-review for objective correctness
+
+Before presenting a change, check:
+- Does this preserve buffer/memory invariants? (instance counts, array bounds, pool sizes)
+- Does this material/shader/effect actually compile and produce visible output?
+- Does this produce the same output for the same input as the code path it replaces?
+- Are there any off-by-one, division-by-zero, or NaN propagation risks?
+
+These are verifiable checks that should never reach the user as a "try it and see" moment.
+
+### One rendering path, not two
+
+When the same data needs to render at different fidelity levels (LOD, quality settings, platform tiers), prefer a **single rendering function with a fidelity parameter** over two separate implementations. Divergent code paths rendering the "same" thing will inevitably fall out of sync — one gets fixed, the other doesn't.
+
+### Automated screenshot capture for visual work
+
+Visual iteration burns hours when the feedback loop requires manual screenshots. Before starting extended visual work, set up programmatic screenshot capture:
+- **Web:** Playwright with `--use-gl=angle` or `--use-gl=swiftshader` for WebGL support
+- **Unity:** `ScreenCapture.CaptureScreenshotAsTexture()` in batch mode, or custom editor script
+
+This lets Claude iterate independently on objective failures (white screen, missing geometry, broken materials) without manual loops.
+
+### Structured review handoffs
+
+When a change needs external review (user, teammate, or external LLM like ChatGPT), produce a **review bundle** instead of requiring the reviewer to dig through the repo:
+- The changed files (or relevant excerpts)
+- A summary of what changed and why
+- Specific questions for the reviewer
+- Any context the reviewer needs that isn't obvious from the code
+
+Format: single markdown file, temp directory with just relevant files, or clipboard-ready text.
 
 ---
 

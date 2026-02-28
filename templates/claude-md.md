@@ -57,6 +57,10 @@ Check `Docs/Now.md` for the current mode:
 - [e.g. All game state is immutable — mutations return new objects]
 - [e.g. No `any` types. Use `unknown` + type guards if needed.]
 
+### Data Discipline (C# projects)
+- **No tuning in code** — Designer-tunable values (probabilities, weights, dimensions, radii, densities) must live in data files loaded at runtime, not as literals or constants in logic code. Algorithmic constants (epsilon, max iterations) that have no design meaning are fine in code.
+- **No display text in code** — All player-facing strings use localization keys resolved at runtime from data files. No hardcoded UI text, error messages shown to players, or in-game descriptions in C# code.
+
 ## Deliverable Workflow
 
 Each deliverable gets two files in `Docs/deliverables/`:
@@ -90,6 +94,61 @@ Each major subsystem gets 3-5 identity tests that define "what this system IS." 
 - [e.g. "Core loop completes: boot → meaningful choice → consequence → debrief"]
 
 > **Adapt this:** Sacred contract tests are game-specific. Examples: "dungeon generates a valid path," "relationship value equals sum of active modifiers," "resolution is deterministic under all seeds."
+
+## Web 3D Rendering (React Three Fiber / Three.js)
+
+> **Include this section** if your project uses Three.js, React Three Fiber, Babylon.js, or similar WebGL rendering.
+
+### instancedMesh
+- Always set `frustumCulled={false}` on instancedMesh — Three.js culls based on geometry bounding box, not instance positions
+- Always clamp instance count to allocated buffer size in the apply function — exceeding `args=[undefined, undefined, MAX_COUNT]` causes `GL_INVALID_OPERATION`
+- Size MAX_COUNT based on worst-case per-entity instance counts, not just entity count
+
+### Materials and shaders
+- Verify materials produce visible output before presenting changes — broken materials cause white/grey scenes
+- Test shader compilation — syntax errors in onBeforeCompile or custom shaders fail silently in some browsers
+- Emissive/bloom effects are zoom-dependent — test at the actual gameplay camera distance, not just close-up
+
+### LOD and pooling
+- Never maintain two separate rendering paths for the same data — use a single function with a fidelity parameter
+- If LOD pools exist, both must produce visually identical output or transition artifacts are worse than no LOD
+
+### Constants
+- Extract all visual parameters (insets, band heights, panel thicknesses, material values) into named constants with rationale comments
+- These values get lost across context resets and reintroduced at bad values if they're inline magic numbers
+
+## Unity Rendering
+
+> **Include this section** if your project uses Unity's rendering pipeline.
+
+### Shader and material verification
+- After modifying shaders or materials, verify in batch mode or play mode — broken shaders produce magenta (pink) output
+- Test at target quality level — effects that work in editor may not work on target platform
+- Always check material property assignments — setting a property that doesn't exist on the shader fails silently
+
+### Performance
+- Profile before and after changes touching rendering, physics, or large collections
+- Watch for GC allocation spikes in Update/LateUpdate — use Unity Profiler's GC Alloc column
+- Object pooling: never maintain two separate instantiation paths for the same prefab
+
+### Constants and tuning
+- Visual parameters belong in ScriptableObjects or data files, not hardcoded in MonoBehaviours
+- If a value controls visual appearance, it needs a tooltip explaining why it's that value
+
+## Unity Batch Mode Verification
+
+For Unity projects, **always verify compilation via batch mode** after making changes to packages, assembly definitions, or C# code that Unity will compile. Do not rely on the user to open Unity and report errors.
+
+```bash
+/Applications/Unity/Hub/Editor/<VERSION>/Unity.app/Contents/MacOS/Unity \
+  -batchmode -nographics -projectPath <UNITY_PROJECT_PATH> \
+  -logFile /tmp/unity-batch.log -quit
+```
+
+Check the log for errors:
+```bash
+grep -i "error\|will not be loaded" /tmp/unity-batch.log | grep -v "Licensing\|Curl"
+```
 
 ## Source of Truth
 

@@ -107,3 +107,22 @@ Sacred contract tests were defined in execution-mode.md but absent from the CLAU
 **Rule extracted:** If a concept should influence every implementation session, it needs to be in CLAUDE.md — not just in a workflow doc that Claude reads "as needed."
 
 **Workflow impact:** Added Sacred Contract Tests subsection to the CLAUDE.md template's Testing section.
+
+---
+
+### 2026-02-28 (Context Drift): 3D rendering iteration is uniquely failure-prone with AI
+
+Extended iteration on a React Three Fiber 3D city map (procedural buildings, neon materials, LOD pooling) produced hours of wasted effort across multiple sessions. The failures were not aesthetic judgment calls — they were objective breakages: scenes going white/grey (broken materials), performance regressions, WebGL buffer overflows, buildings visually shifting on zoom (LOD divergence). The file grew to 2688 lines with no one flagging it.
+
+Root causes: (1) Trial-and-error against the user's eyeballs instead of researching Three.js APIs first. (2) Two divergent rendering paths for the same buildings (instanced pool vs render pool) that inevitably fell out of sync. (3) Magic numbers (0.82 inset, 55% band height) lost across context resets and reintroduced at bad values. (4) No automated screenshot capture, so every wrong guess cost a manual feedback loop. (5) No self-review for objective correctness (buffer invariants, material compilation, output parity).
+
+**Rules extracted:**
+- **Research first** — when working with unfamiliar 3D/rendering APIs, look up the correct approach before coding. Wrong guesses compound.
+- **File size guardrails** — propose splitting at ~500 lines. Rendering helpers, LOD logic, and React components are separate concerns.
+- **Named constants with rationale** — critical parameters need comments explaining why, not just what. This survives context loss.
+- **Self-review for objective correctness** — check buffer invariants, material assignments, output parity before presenting changes. These are verifiable, not subjective.
+- **One rendering path** — prefer a single function with a fidelity parameter over two implementations that render the "same" thing.
+- **Automated screenshot capture** — set up Playwright with WebGL-capable browser for visual iteration. Eliminates manual screenshot loops for objective failures.
+- **Structured review handoffs** — when external review is needed, produce a review bundle (changed files + summary + specific questions) instead of requiring the reviewer to dig through the repo.
+
+**Workflow impact:** Added Implementation Discipline section to execution-mode.md. Added Web 3D and Unity rendering sections to CLAUDE.md template. Added WebGL/3D stack profile to ui-testing.md.

@@ -170,13 +170,35 @@ The process above is stack-agnostic. The tooling is not. Each project declares w
 | Flows | Playwright or RTL + user-event |
 | Visual | Playwright screenshots |
 
+### Web (React Three Fiber / Three.js / WebGL)
+
+| Layer | Tooling |
+|-------|---------|
+| Structural | Limited — jsdom can't render WebGL. Assert component props, data flow, and scene graph structure via React Testing Library, but these can't catch visual/material bugs |
+| Flows | Playwright with `--use-gl=angle` or `--use-gl=swiftshader` flag for WebGL support. Interactions go through DOM events (orbit controls, clicks on overlays) |
+| Visual | Playwright screenshots (primary verification — most 3D bugs are only visible in screenshots). Use `--use-gl=angle` for GPU-accelerated rendering that matches real browsers |
+
+**Note:** WebGL/3D testing has a unique gap — structural tests (jsdom) can't see rendering at all, and flow tests require a real browser with GL support. Visual regression via Playwright screenshots is the most valuable layer for 3D projects. Prioritize it over structural tests for rendering code.
+
+**Playwright WebGL setup:**
+```typescript
+// playwright.config.ts
+export default defineConfig({
+  use: {
+    launchOptions: {
+      args: ['--use-gl=angle'], // or '--use-gl=swiftshader' for CI without GPU
+    },
+  },
+});
+```
+
 ### Unity
 
 | Layer | Tooling |
 |-------|---------|
 | Structural | Unity Test Framework + scene queries (GameObject.Find, component assertions) |
 | Flows | Unity Test Framework + simulated input |
-| Visual | Project-specific — custom screenshot capture or manual verification |
+| Visual | `ScreenCapture.CaptureScreenshotAsTexture()` in play mode tests, or custom editor screenshot script for batch mode. Compare against baseline PNGs with tolerance threshold |
 
 > **Adapt this:** Add profiles as needed. The pyramid and spec-to-test mapping stay the same. Only the tooling changes.
 
