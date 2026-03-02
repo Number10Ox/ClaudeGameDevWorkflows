@@ -126,3 +126,15 @@ Root causes: (1) Trial-and-error against the user's eyeballs instead of research
 - **Structured review handoffs** — when external review is needed, produce a review bundle (changed files + summary + specific questions) instead of requiring the reviewer to dig through the repo.
 
 **Workflow impact:** Added Implementation Discipline section to execution-mode.md. Added Web 3D and Unity rendering sections to CLAUDE.md template. Added WebGL/3D stack profile to ui-testing.md.
+
+---
+
+### 2026-03-01 (Context Drift v2): Simulation prototypes need run reports, not just test suites
+
+Tests prove the engine math is correct. They don't tell you whether a 30-turn season *reads well*, whether LLM-driven strategy decisions make sense, or whether the narrative voice is consistent. After building a zone-based metagame prototype with 130 passing tests and a 5/5 target arc score, the first live API run produced output that scrolled past in the terminal and couldn't be reviewed later. The engine worked perfectly — but there was no artifact to evaluate.
+
+Simulation and narrative games need a **run report**: a structured artifact saved after every prototype run that captures mechanical metrics, per-turn narrative output, strategic decisions, and engine events in a reviewable format. This is the simulation equivalent of an automated screenshot for visual work — without it, evaluation requires re-running and watching in real-time. Mock runs become the baseline; API/LLM runs get evaluated against them.
+
+**Rule extracted:** Tests validate correctness. Run reports validate *quality*. For any game with procedural/simulated output (seasons, campaigns, narrative arcs), the prototype must produce a reviewable artifact per run — not just pass/fail. This belongs in the Verification Loop alongside "prove it works."
+
+**Workflow impact:** Gap identified in execution-mode.md — the Verification Loop covers tests and behavioral specs but not evaluation of procedural output. Recommend adding a "Run Reports" subsection to the Verification Loop: for simulations and narrative games, every prototype run should save a structured report (JSON + human-readable summary) that can be reviewed, compared across seeds, and used as a baseline.

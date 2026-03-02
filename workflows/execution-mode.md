@@ -202,6 +202,30 @@ The #1 tip for quality output (Boris Cherny): always give Claude a way to verify
 - Don't mark work as done until tests pass
 - For behavioral claims: "Prove it works" — diff outputs or write a test that demonstrates the behavior
 
+### Run Reports
+
+Tests validate correctness. Run reports validate quality. After a prototype run (playtest, simulation, season), write a structured report to disk for human review.
+
+A run report captures **what happened** — not just whether it passed, but whether it felt right. This is especially important for games with emergent behavior, procedural systems, or AI-driven content where "all tests pass" doesn't mean "the experience is good."
+
+**What belongs in a run report:**
+- **Header:** mode, seed, config, run length — enough to reproduce the run
+- **Turn-by-turn data:** world state, decisions made, events triggered, narrative output
+- **Scorecard:** automated quality checks (target arc metrics, balance checks, pacing targets)
+- **Outcome summary:** who won, how, final state
+
+**When to generate:**
+- Every prototype run should produce a report file
+- Reports live in an `output/` directory (gitignored) — they're artifacts, not source
+- The runner script handles report generation automatically; no manual step needed
+
+**How to use:**
+- Review reports to spot pacing issues, balance problems, or narrative quality gaps that tests can't catch
+- Compare reports across seeds to verify variety and robustness
+- Share reports with collaborators as concrete evidence of system behavior
+
+See the [run report template](../templates/run-report.md) for the standard format.
+
 ### Sacred contract tests
 
 Keep a small set (3-5) of tests that represent the game's identity. These run constantly and never break:
