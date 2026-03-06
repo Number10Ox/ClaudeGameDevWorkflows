@@ -138,3 +138,15 @@ Simulation and narrative games need a **run report**: a structured artifact save
 **Rule extracted:** Tests validate correctness. Run reports validate *quality*. For any game with procedural/simulated output (seasons, campaigns, narrative arcs), the prototype must produce a reviewable artifact per run — not just pass/fail. This belongs in the Verification Loop alongside "prove it works."
 
 **Workflow impact:** Gap identified in execution-mode.md — the Verification Loop covers tests and behavioral specs but not evaluation of procedural output. Recommend adding a "Run Reports" subsection to the Verification Loop: for simulations and narrative games, every prototype run should save a structured report (JSON + human-readable summary) that can be reviewed, compared across seeds, and used as a baseline.
+
+---
+
+### 2026-03-05 (Vela City Map): External "build playbook" reconciliation — response discipline vs process discipline
+
+ChatGPT generated an "LLM Build Playbook" with artifact-first response rules, drift headers, Three Anchors (Structure/Golden Example/Hard Constraints), and per-pass iteration discipline. Initial concern was that ClaudeGameDevWorkflows was missing something fundamental. On comparison, ~70% was already covered (drift control via Now.md/write-back, scope discipline via modes, determinism requirements, validation checklists). The remaining ~30% was genuinely new but complementary — it constrains *how Claude responds during each turn* rather than *what process to follow*.
+
+Key unique contributions absorbed: (1) artifact-first format (lead with code, not explanation), (2) per-artifact drift headers (VERSION/SCOPE/DO NOT CHANGE/CHANGE ONLY), (3) Three Anchors mental checklist, (4) domain-specific style rules for spatial content (grid model, semantic placement, variety caps) and narrative content (message length, source-first ordering). The playbook's strict response template (NEXT ARTIFACT / VALIDATION / ASSUMPTIONS) is useful during pure execution but too rigid for design discussions — the existing DESIGN mode already handles that gap.
+
+**Rule extracted:** Process discipline (when to design vs build) and response discipline (how to structure each turn's output) are separate concerns. Both matter. A project can follow perfect process but still produce bloated responses that bury the deliverable under prose — or produce tight artifacts without any session-level continuity.
+
+**Workflow impact:** Created `workflows/build-discipline.md` as an execution-mode companion. Not merged into execution-mode.md because it's about response format, not engineering process.

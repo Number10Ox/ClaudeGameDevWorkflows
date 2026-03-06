@@ -54,6 +54,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for how to add learnings, propose workflo
 | [workflows/llm-crosscheck.md](workflows/llm-crosscheck.md) | When and how to use external LLMs (ChatGPT, Gemini) to stress-test your design |
 | [workflows/ui-specification.md](workflows/ui-specification.md) | UI spec workflow: when to write specs, the implementation contract, verification process |
 | [workflows/ui-testing.md](workflows/ui-testing.md) | UI testing pyramid: structural assertions, functional flows, visual regression — spec-driven, Claude-written |
+| [workflows/build-discipline.md](workflows/build-discipline.md) | Response-level rules for execution: artifact-first format, drift headers, Three Anchors, pass isolation, validation discipline |
 
 ### Templates
 
