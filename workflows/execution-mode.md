@@ -471,3 +471,5 @@ This makes AI-to-AI collaboration legible to humans. When a lead agent delegates
 - [Spec-Driven Development with Claude Code](https://alexop.dev/posts/spec-driven-development-claude-code-in-action/)
 - [Claude Code Best Practices (Anthropic)](https://www.anthropic.com/engineering/claude-code-best-practices)
 - [The Task Tool: Agent Orchestration](https://dev.to/bhaidar/the-task-tool-claude-codes-agent-orchestration-system-4bf2)
+- [Vercel: Introducing React Best Practices](https://vercel.com/blog/introducing-react-best-practices) — parallel data loading, lazy state initialization, request waterfall elimination
+- [Vercel: AGENTS.md Outperforms Skills in Our Agent Evals](https://vercel.com/blog/agents-md-outperforms-skills-in-our-agent-evals) — passive context (instruction files) beats active retrieval (agent-decided tool calls) for domain knowledge

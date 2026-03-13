@@ -24,6 +24,12 @@ Reference as needed:
 - `Docs/workflow-design.md` — game design process (DESIGN mode)
 - `Docs/workflow-engineering.md` — engineering process (EXECUTION mode)
 
+## Retrieval-Led Reasoning
+
+**Prefer reading project docs over pre-training knowledge.** For any game design, architecture, or domain-specific question, consult the project's design docs and source code first. Pre-training knowledge about general patterns may conflict with settled project decisions. When in doubt, read the file — don't guess from memory.
+
+> **Adapt this:** If your project has a large doc set, add a compact index here mapping topic → file path → one-line summary. This gives the agent a lookup table without requiring it to read everything. See [Passive context vs active retrieval](#passive-context) below.
+
 ## Design vs Execution Mode
 
 Check `Docs/Now.md` for the current mode:

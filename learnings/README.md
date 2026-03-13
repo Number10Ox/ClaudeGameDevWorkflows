@@ -150,3 +150,15 @@ Key unique contributions absorbed: (1) artifact-first format (lead with code, no
 **Rule extracted:** Process discipline (when to design vs build) and response discipline (how to structure each turn's output) are separate concerns. Both matter. A project can follow perfect process but still produce bloated responses that bury the deliverable under prose — or produce tight artifacts without any session-level continuity.
 
 **Workflow impact:** Created `workflows/build-discipline.md` as an execution-mode companion. Not merged into execution-mode.md because it's about response format, not engineering process.
+
+---
+
+### 2026-03-12 (Context Drift): Passive context beats active retrieval for agent knowledge
+
+Vercel's AGENTS.md evaluation data showed that embedding domain knowledge directly in instruction files (AGENTS.md, CLAUDE.md) outperforms teaching agents to use retrieval tools (like skills or MCP servers) to look up the same knowledge. The key insight: agents deciding *when* to look something up is itself a failure mode — they don't know what they don't know. Passive context (always loaded) eliminates that decision entirely.
+
+For game dev projects with large doc sets, the practical application is a **compact doc index in CLAUDE.md** — a topic→file→one-line-summary lookup table that's always in context. The agent doesn't need to decide whether to read the naming guide; it sees the index entry and reads it when relevant. This is cheaper than loading full docs into CLAUDE.md but more reliable than hoping the agent searches for them.
+
+**Rule extracted:** When project knowledge is critical (vocabulary, architecture decisions, design constraints), put it in the instruction file or put an index entry pointing to it. Don't rely on the agent to decide to look it up — the retrieval decision is the weak link.
+
+**Workflow impact:** Added "Retrieval-Led Reasoning" section to the CLAUDE.md template with guidance on doc indexes. Added Vercel article references to execution-mode.md.
