@@ -166,20 +166,48 @@ Examples of quality gate skills:
 
 The review agent is key: the writer's context skips violations that a fresh reader catches. Self-checking is necessary but not sufficient.
 
-### Screenshot gate (visual quality gate variant)
-For UI/visual work, code review alone cannot catch layout overflow, visual weight imbalances, color contrast in context, or spacing issues that are technically correct but visually wrong. The screenshot gate adds a second defense layer:
+### Screenshot gate with blast radius analysis (visual quality gate variant)
+For UI/visual work, code review alone cannot catch layout overflow, visual weight imbalances, color contrast in context, or spacing issues that are technically correct but visually wrong. The visual quality gate has three layers:
 
 1. **Code-level review** — check changed files against design system rules (tokens, palettes, layout safety, interaction states)
-2. **Screenshot request** — explicitly ask the user for a screenshot before marking work done
+2. **Blast radius analysis** — trace which other pages/components consume the modified shared elements and generate a visual test plan
+3. **Screenshot walkthrough** — user visits affected surfaces and provides screenshots for verification
+
+#### Blast radius analysis
+
+When a change touches shared UI elements (design tokens, shared components, style objects), Claude traces the dependency graph to identify all affected surfaces:
 
 ```markdown
-## Screenshot Gate
-MANDATORY after every visual change: Before marking UI work as done, tell the user:
-"I've completed the visual changes. Please share a screenshot so I can verify
-the result matches intent."
+## Visual Test Plan (Blast Radius Analysis)
+
+After code review, trace the impact of changes through the dependency graph:
+
+1. Identify what changed (which files, exports, style properties)
+2. Grep for all imports of modified files/exports, follow transitive deps
+3. For each affected surface, generate a test scenario:
+
+SURFACE: [page name] ([route])
+AFFECTED BY: [what changed and how it reaches this surface]
+VERIFY:
+  - [specific visual element] still [expected appearance]
+  - [specific visual element] still [expected appearance]
+RISK: HIGH / MEDIUM / LOW
+
+4. Present the plan to the user as a walkthrough:
+   HIGH/MEDIUM surfaces require screenshots.
+   LOW surfaces noted but optional.
 ```
 
-This is the lightweight alternative to automated visual regression testing (Playwright, Percy). Use it when automated screenshot capture isn't set up.
+Risk levels:
+- **HIGH** — component directly modified, or its immediate parent was
+- **MEDIUM** — consumes a shared token/style/component that changed
+- **LOW** — imports a shared module but doesn't use the changed export
+
+Test scenarios must reference specific visual elements ("DossierCard border still cyan, amber title strip visible") — not generic "looks right."
+
+For leaf-node changes (single component, one page, no shared dependencies), the test plan collapses to just that page. Don't generate ceremony for isolated changes.
+
+This is the lightweight alternative to automated visual regression testing (Playwright, Percy). Claude can't run a browser, but it can do the hard part: trace the blast radius and generate the test plan. The user provides the screenshots.
 
 ### Task skill (forked subagent)
 Discrete task with clear output. Uses `context: fork` for isolation.

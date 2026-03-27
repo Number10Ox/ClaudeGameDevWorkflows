@@ -220,7 +220,7 @@ When the user says "sign off" or similar — run ALL of these:
 - [ ] Technical design doc updated if architecture changed
 - [ ] Code review passed — no outstanding FIX items (see Code Review above)
 - [ ] UX reachability check passed (if UI-touching)
-- [ ] Visual review passed (if UI-touching) — design system rules checked, screenshot requested from user
+- [ ] Visual review passed (if UI-touching) — design system rules checked, blast radius traced for shared element changes, visual test plan generated, screenshots verified
 
 > **Adapt this:** Add your project's specific checks — linting, coverage thresholds, build verification, etc.
 
