@@ -174,6 +174,32 @@ Before submitting any narrative text, scan for these common violations:
 
 ---
 
+## The Mandatory Review Gate
+
+Reading rules before writing is necessary but **not sufficient**. The writer's context skips violations that a fresh reader catches. In production use, narrative text shipped with raw numbers, diagnosis-over-observation, and missing handler choice costs — all with the rules loaded in the same session.
+
+**The fix: a two-pass enforcement protocol.**
+
+### Writing Mode
+1. Load all narrative rules into active context (via skill invocation)
+2. Write the text with rules as hard constraints
+3. **Launch a separate review agent** (mandatory — not optional, not "if time permits")
+
+### Review Mode (the review agent)
+Launch a `general-purpose` Task agent that:
+1. Re-reads all source rule docs from disk (fresh context, not inherited from writer)
+2. Checks every piece of text against every rule
+3. Reports per rule per text block: **PASS** / **FAIL** / **WARN**
+4. For FAILs: quotes the violating text, names the rule, explains why, suggests a fix
+
+### Exit criteria
+- Zero FAIL results before presenting text to the user
+- WARN results reviewed and accepted or fixed
+
+This is the quality gate skill pattern applied to narrative text. See `skill-authoring.md` for the general pattern.
+
+---
+
 ## Adapting for Your Project
 
 To create a project-specific narration skill from this framework:
@@ -183,5 +209,6 @@ To create a project-specific narration skill from this framework:
 3. **Add vocabulary rules** — your game's canonical terms and banned synonyms
 4. **Add number display rules** — what numeric info (if any) the player sees, and in what format
 5. **Create a `/narration` skill** in `.claude/skills/narration/` that references this framework and adds your local rules
+6. **Wire the review gate** — the skill's SKILL.md should mandate launching a review agent after writing, not just loading rules before writing
 
-See `workflows/skill-authoring.md` for how to build the skill.
+See `workflows/skill-authoring.md` for how to build the skill (especially the quality gate pattern).

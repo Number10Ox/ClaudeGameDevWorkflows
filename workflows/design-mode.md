@@ -36,9 +36,37 @@ Claude reads these automatically via CLAUDE.md. They are the only source of trut
 
 ---
 
-## Layer Declaration
+## The Design Hierarchy
 
-Every design task is tagged as one of these layers. This prevents mixing concerns in a single conversation.
+Every design element belongs to exactly one level. When a new idea, question, or decision surfaces, **classify it before discussing it.**
+
+| Level | What it is | Example |
+|-------|-----------|---------|
+| **Thesis** | Genre bets. The "why." 1-3 per project, set at start, testable. | "Players enjoy managing unreliable agents" |
+| **Pillar** | Experience goals. The feelings you want. Derived from theses. | "Every decision feels like a real tradeoff" |
+| **Hypothesis** | Testable mechanical experiments. Format: "If [mechanic], then [pillar] because [reason]." | "If interrupts cost context, players will feel resource tension" |
+| **Design Rule** | Authored constraints on how systems behave. Enforced, not tested. | "Agent never outputs numbers" |
+| **Scope Boundary** | What's in/out for this version. | "No multiplayer in v1" |
+
+### Classifying incoming ideas
+
+| If it feels like... | It's probably a... | Action |
+|---|---|---|
+| "We should make a game about X" | **Thesis** | Rare. Log it. Discuss scope change. |
+| "The player should feel X" | **Pillar** | Check if it traces to a thesis. |
+| "What if the game had X mechanic?" | **Hypothesis** | Frame as "If [mechanic], then [pillar] because [reason]." |
+| "X should work this way" | **Design Rule** | Is this a constraint we're choosing to enforce? |
+| "We're not doing X for now" | **Scope Boundary** | Add to scope boundaries. |
+| "I don't know how X should work" | **Open Question** | Log in Now.md. |
+| "X contradicts Y" | **Tension** | Identify which levels conflict. Resolve at higher level first. |
+
+> **Adapt this:** The hierarchy levels are game-independent. Your specific theses, pillars, and rules are project-specific. Some projects may add or rename levels — the principle is: classify maturity before discussing.
+
+---
+
+## Layer Declaration (optional)
+
+For larger projects, tag each design task with a domain layer to prevent mixing concerns in a single conversation.
 
 | Layer | Covers |
 |-------|--------|
@@ -52,7 +80,7 @@ Every design task is tagged as one of these layers. This prevents mixing concern
 
 If the conversation drifts to another layer, Claude should flag it: *"That's a [System] question — we're in [UI] right now. Log it or switch?"*
 
-> **Adapt this:** Your layers might be different. A board game might split System into Rules/Components/Interaction. A narrative game might split Representation into Writing/Visual/Audio. A multiplayer game might add Networking/Social. The point is: declare a layer, stay in it.
+> **Adapt this:** Your layers might be different. A board game might split System into Rules/Components/Interaction. A narrative game might split Representation into Writing/Visual/Audio. The point is: declare a layer, stay in it.
 
 ---
 
@@ -66,6 +94,28 @@ This prevents the most common failure mode: generating endless ideas without dec
 
 ## The Design Conversation Pattern
 
+### Focused Exploration (recommended default)
+
+A structured response format that prevents multi-idea dumps and keeps conversations productive.
+
+**Required response order (every turn):**
+
+1. **Reflection (mandatory, first)** — Restate what you heard in 2-5 lines
+2. **One Idea Only (mandatory)** — Present exactly ONE concrete idea or change per reply, tagged with hierarchy level (Thesis / Pillar / Hypothesis / Design Rule / Scope Boundary)
+3. **Impact Summary (mandatory, brief)** — What changes, what stays unchanged, why it helps
+4. **Parking Lot (optional, stubs only)** — Up to 3 additional ideas, one sentence each — no detail unless the user picks one
+5. **Same-Page Check (mandatory, last)** — 2-3 specific alignment questions
+
+**Hard constraints:** No multi-idea dumps. No long screens. Classify every new idea before discussing it.
+
+**Stop rule:** If the user does not confirm alignment, repeat or clarify — do not introduce a new idea.
+
+> **Adapt this:** Some teams prefer a looser conversation style. The Focused Exploration protocol is most valuable when design conversations tend to sprawl or generate ideas faster than they resolve them.
+
+### Alternative: Generate-and-Narrow
+
+A lighter pattern when Focused Exploration feels too rigid:
+
 1. **Declare the layer** — "We're working on [System / Mechanics]"
 2. **Declare the maturity** — Is this Established, Speculative, or an Open Question?
 3. **Generate 3-5 options**, bucketed, with 1-2 examples each — then narrow and recommend
@@ -74,13 +124,21 @@ This prevents the most common failure mode: generating endless ideas without dec
 
 ---
 
+## Research-First Design
+
+When a design question needs external reference — **research before proposing.** Launch parallel agents per distinct research angle. Synthesize results before proposing. This prevents the AI from defaulting to generic game dev patterns from training data when project-specific answers may already exist in predecessor projects, design docs, or external references.
+
+---
+
 ## Guardrails Claude Enforces
 
-1. **One active question at a time.** Everything else goes to the backlog.
-2. **Design docs are canon, not vibes.** Changing an invariant requires a Change Proposal with rationale.
-3. **Build forward, don't backfill.** If something seems missing, design it new. Don't resurrect old ideas from git history. If an old idea is worth revisiting, quarantine it as "Candidate Re-adoption (NOT ACTIVE)" first.
-4. **Out-of-scope gets logged, not lost.** Questions outside the current mode/layer get recorded as open questions or future tasks.
-5. **Sessions end with write-back.** Every design session produces:
+1. **Classify before discussing.** Every new idea gets tagged with its hierarchy level before analysis begins.
+2. **One active question at a time.** Everything else goes to the backlog.
+3. **Link hypotheses to pillars.** A hypothesis without a pillar connection is unmoored — it might be interesting but it doesn't serve the game.
+4. **Design docs are canon, not vibes.** Changing an invariant requires a Change Proposal with rationale.
+5. **Build forward, don't backfill.** If something seems missing, design it new. Don't resurrect old ideas from git history. If an old idea is worth revisiting, quarantine it as "Candidate Re-adoption (NOT ACTIVE)" first.
+6. **Out-of-scope gets logged, not lost.** Questions outside the current mode/layer get recorded as open questions or future tasks.
+7. **Sessions end with write-back.** Every design session produces:
    - Settled decisions → Decision Log entries
    - Updated open questions → Now.md
    - Updated source of truth → SettledDesign.md (if anything is now Established)
@@ -138,5 +196,5 @@ If you skip this, the next session starts with stale context and you'll spend 15
 
 ## If You Do Only Two Things
 
-1. Keep **Now.md** current (active question + mode + open questions)
-2. End sessions with **write-back** (decisions to Decisions.md, state to SettledDesign.md)
+1. **Classify** every new idea into the hierarchy before discussing it
+2. **Write back** at session end (decisions to Decisions.md, state to SettledDesign.md, Now.md current)

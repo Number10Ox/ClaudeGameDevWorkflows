@@ -153,6 +153,48 @@ Key unique contributions absorbed: (1) artifact-first format (lead with code, no
 
 ---
 
+### 2026-03-26 (Context Drift): Point-of-use skills are the highest-value skill pattern
+
+Rules read at session start don't survive to the moment of action. This is the single most impactful workflow discovery since the repo was created. Three quality gate skills now enforce it in production: `/narration` (narrative rules), `/plan` (acceptance criteria + red team), `/visual` (design system + screenshot gate). Each skill forces a re-read of domain rules at the exact moment they're needed — not recalled from session memory.
+
+The pattern is always the same: (1) load compiled checklist from `references/CHECKLIST.md`, (2) apply rules as hard constraints during the work, (3) launch a separate review agent to catch what the writer's context skips. The review agent is key — self-checking is necessary but not sufficient.
+
+**Rule extracted:** If you keep shipping the same kind of bug, that's a quality gate skill waiting to be written. The skill converts "rules Claude should follow" into "rules Claude will follow."
+
+**Workflow impact:** Added "The Point-of-Use Principle" and "Quality gate skill" pattern to skill-authoring.md. Added Point-of-Use Skills section to CLAUDE.md template.
+
+---
+
+### 2026-03-26 (Context Drift): Screenshot gate catches what code review cannot
+
+Repeatedly shipped visual bugs that were immediately obvious in a screenshot but invisible in code review: panel content clipping, sibling size mismatches, text overflow, backdrop-filter failures. Created a `/visual` skill with two layers: (1) code-level review against design system rules, and (2) a mandatory screenshot request from the user before sign-off. The lightweight alternative to automated visual regression.
+
+**Rule extracted:** After any UI change, always request a screenshot from the user before marking work done. Code review alone cannot catch layout/visual-weight issues that are obvious on screen.
+
+**Workflow impact:** Added visual review + screenshot gate to execution-mode.md sign-off checklist. Added screenshot gate variant to skill-authoring.md.
+
+---
+
+### 2026-03-26 (Context Drift): UX reachability check prevents hidden-URL features
+
+Shipped a panel to `/dev/handler` — only reachable by typing a dev URL. Three questions now gate every UI deliverable: (1) What does the player want to do? (2) Where are they? (3) Can they get there without knowing a hidden URL? If #3 is no, the feature isn't done.
+
+**Rule extracted:** A feature that works but can't be reached from where the player already is isn't a feature.
+
+**Workflow impact:** Added UX Reachability Check section to execution-mode.md.
+
+---
+
+### 2026-03-26 (Context Drift): Narrative review must be a separate agent, not self-review
+
+Showcase v4 shipped with raw numbers, diagnosis-over-observation, and missing handler choice costs — with all the rules loaded in the same session. The writer's context normalizes its own violations. The fix: after writing, launch a separate review agent that re-reads all rule docs from disk and checks every line. PASS/FAIL/WARN per rule.
+
+**Rule extracted:** Self-review catches syntax, not semantic violations. For subtle quality rules, a separate reviewer with fresh context is mandatory.
+
+**Workflow impact:** Added "The Mandatory Review Gate" to narrative-quality.md. The two-pass pattern generalizes to all quality gate skills.
+
+---
+
 ### 2026-03-12 (Context Drift): Passive context beats active retrieval for agent knowledge
 
 Vercel's AGENTS.md evaluation data showed that embedding domain knowledge directly in instruction files (AGENTS.md, CLAUDE.md) outperforms teaching agents to use retrieval tools (like skills or MCP servers) to look up the same knowledge. The key insight: agents deciding *when* to look something up is itself a failure mode — they don't know what they don't know. Passive context (always loaded) eliminates that decision entirely.

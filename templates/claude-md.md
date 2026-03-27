@@ -67,6 +67,18 @@ Check `Docs/Now.md` for the current mode:
 - **No tuning in code** — Designer-tunable values (probabilities, weights, dimensions, radii, densities) must live in data files loaded at runtime, not as literals or constants in logic code. Algorithmic constants (epsilon, max iterations) that have no design meaning are fine in code.
 - **No display text in code** — All player-facing strings use localization keys resolved at runtime from data files. No hardcoded UI text, error messages shown to players, or in-game descriptions in C# code.
 
+## Point-of-Use Skills
+
+> Rules read at session start don't survive to the moment of action. Skills force a re-read at the point of use. See `workflows/skill-authoring.md` for the quality gate pattern.
+
+[List your project's quality gate skills here. Examples:]
+
+- **Before writing player-facing text**, invoke `/narration`. Loads narrative rules, banned vocabulary, voice constraints, and the review gate.
+- **Before writing an implementation plan**, invoke `/plan`. Loads acceptance criteria checks, pillar alignment, and red team spec.
+- **After making visual/UI changes**, invoke `/visual`. Loads design system rules and requests a screenshot from the user before sign-off.
+
+> **Adapt this:** Create quality gate skills for whatever your project's recurring quality failures are. If you keep shipping the same kind of bug, that's a skill waiting to be written.
+
 ## Deliverable Workflow
 
 Each deliverable gets two files in `Docs/deliverables/`:

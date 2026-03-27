@@ -14,9 +14,11 @@ Work in deliverables — discrete chunks with clear acceptance criteria.
 
 1. **"Start [deliverable]"** — begin planning
 2. **Plan** — write acceptance criteria and plan to deliverable files, or use `/plan_with_team` to orchestrate
-3. **Implement with checkpoints** — builder agents execute tasks, validator agents verify. For larger stories, define checkpoint gates (see below)
-4. **"Sign off"** — triggers the sign-off checklist
-5. **Move on** — start next deliverable
+3. **Red team** — attack the plan for ambiguities, underspecified behaviors, and minimal-wrong-pass implementations. Fix the plan before implementing.
+4. **Implement with checkpoints** — builder agents execute tasks, validator agents verify. For larger stories, define checkpoint gates (see below)
+5. **Code review** — structured review of all changed files (see Code Review below)
+6. **"Sign off"** — triggers the sign-off checklist
+7. **Move on** — start next deliverable
 
 ### Deliverable Files
 
@@ -179,6 +181,35 @@ Example (for a TypeScript game engine):
 
 ---
 
+## Code Review
+
+After implementation and before sign-off, review all changed files against your project's coding style guide. This is mandatory for deliverables. For quick fixes (single-file, under 20 lines), a lighter pass is fine.
+
+### Review format
+
+Claude reviews by reading each changed file and checking against the project's code style rules and design system. Findings are reported inline:
+- **FIX** — must resolve before sign-off (e.g., hardcoded font size, duplicated pattern)
+- **WARN** — should resolve, acceptable to defer with a note (e.g., component slightly over size limit)
+- **NOTE** — observation, no action needed (e.g., opportunity for future extraction)
+
+If any FIX items are found, resolve them before proceeding to sign-off.
+
+> **Adapt this:** Your checklist items are project-specific. Examples: no hardcoded colors (use design tokens), no duplicated patterns, type safety, immutability, semantic token usage, named constants for magic numbers.
+
+---
+
+## UX Reachability Check
+
+For any deliverable that adds or changes UI, answer these before marking done:
+
+1. **What does the player want to do?** (the user story in one line)
+2. **Where are they when they want to do it?** (which screen/state)
+3. **Can they get there without leaving the screen or knowing a hidden URL?**
+
+If the answer to #3 is no, the feature isn't done — it needs a path from where the player already is.
+
+---
+
 ## Deliverable Sign-Off Checklist
 
 When the user says "sign off" or similar — run ALL of these:
@@ -187,7 +218,9 @@ When the user says "sign off" or similar — run ALL of these:
 - [ ] Edge cases identified and tested
 - [ ] No regressions: full test suite passes clean
 - [ ] Technical design doc updated if architecture changed
-- [ ] Critical code review: pass through all new/modified files checking for bugs, type safety, constraint adherence
+- [ ] Code review passed — no outstanding FIX items (see Code Review above)
+- [ ] UX reachability check passed (if UI-touching)
+- [ ] Visual review passed (if UI-touching) — design system rules checked, screenshot requested from user
 
 > **Adapt this:** Add your project's specific checks — linting, coverage thresholds, build verification, etc.
 

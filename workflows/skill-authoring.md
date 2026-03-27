@@ -115,6 +115,16 @@ Design skills with this in mind. Don't put everything in SKILL.md.
 
 ---
 
+## The Point-of-Use Principle
+
+**Rules read at session start don't survive to the moment of action.** This is the single most important insight for skill design. A narrative quality checklist loaded via CLAUDE.md at session start will be forgotten by the time Claude is actually writing narrative text 30 minutes later. A visual design system read at the beginning of a session won't be active in context when Claude is editing CSS.
+
+**Skills solve this by forcing a re-read at the point of use.** When Claude invokes `/narration` before writing text, or `/visual` after editing UI components, the relevant rules are loaded fresh into the active context window — not recalled from session memory.
+
+This is why quality gate skills (below) are the highest-value skill pattern for game development. They convert "rules Claude should follow" into "rules Claude will follow."
+
+---
+
 ## Key Design Patterns
 
 ### Reference skill (inline context)
@@ -126,6 +136,50 @@ description: API design patterns for this codebase
 ---
 When writing endpoints: use RESTful naming...
 ```
+
+### Quality gate skill (point-of-use enforcement)
+Loads domain rules at the moment they're needed and runs a structured review. The most effective pattern for game dev — prevents drift between "rules loaded" and "rules applied."
+
+Structure:
+- **SKILL.md** — describes when to invoke, what to read, and the review protocol
+- **references/CHECKLIST.md** — compiled pass/fail rules from source docs
+- **Two-pass enforcement:** writing mode (rules active during creation) + review mode (separate agent checks the output)
+
+```yaml
+---
+name: narration
+description: Use when writing or reviewing player-facing narrative text. Loads narrative rules at point of use.
+---
+## On Invocation
+1. Read [CHECKLIST.md](references/CHECKLIST.md)
+2. All checklist rules are hard constraints during writing
+
+## Mandatory Review
+After writing, launch a review agent that re-reads all source docs and checks every line.
+Report PASS/FAIL/WARN per rule. Zero FAIL before presenting to user.
+```
+
+Examples of quality gate skills:
+- **`/narration`** — narrative voice rules, banned vocabulary, failure mode detection
+- **`/plan`** — acceptance criteria, pillar alignment, red team checks
+- **`/visual`** — design system tokens, layout safety, interaction states, screenshot gate
+
+The review agent is key: the writer's context skips violations that a fresh reader catches. Self-checking is necessary but not sufficient.
+
+### Screenshot gate (visual quality gate variant)
+For UI/visual work, code review alone cannot catch layout overflow, visual weight imbalances, color contrast in context, or spacing issues that are technically correct but visually wrong. The screenshot gate adds a second defense layer:
+
+1. **Code-level review** — check changed files against design system rules (tokens, palettes, layout safety, interaction states)
+2. **Screenshot request** — explicitly ask the user for a screenshot before marking work done
+
+```markdown
+## Screenshot Gate
+MANDATORY after every visual change: Before marking UI work as done, tell the user:
+"I've completed the visual changes. Please share a screenshot so I can verify
+the result matches intent."
+```
+
+This is the lightweight alternative to automated visual regression testing (Playwright, Percy). Use it when automated screenshot capture isn't set up.
 
 ### Task skill (forked subagent)
 Discrete task with clear output. Uses `context: fork` for isolation.
