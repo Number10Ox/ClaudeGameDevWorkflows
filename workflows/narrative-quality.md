@@ -28,18 +28,24 @@ Six pass/fail rules gate narrative quality. Origin: Gray Corridors tier-2 evalua
 
 ### A2. sourceFirst
 
-**Rule:** Discoveries are preceded by the physical action that reveals them. Action then discovery, in that order.
+**Rule:** Discoveries are preceded by the action or perception that reveals them. The agent can't know something without a way of knowing it.
 
-- **Pass:** "I pressed the back of my hand to the door. Warm."
+- **Pass:** "I pressed the back of my hand to the door. Warm." (Action, then discovery.)
+- **Pass:** "The waiting room is full and nobody is talking." (Perception available on entry.)
 - **Fail:** "The door is warm." (No preceding physical action.)
+- **Fail:** "The coherence curve shows steady improvement." (How? Did the agent access a screen?)
+
+**Ordering is flexible, not fixed.** The sequence perception → movement → interaction → discovery → reaction is a possible flow, not a mandated one. Sometimes perception comes before position. Sometimes discovery triggers movement. The constraint is that knowledge must be reachable — not that the agent must narrate arrival before noticing what's wrong.
 
 ### A3. epistemicIntegrity
 
-**Rule:** The agent reports only what it has (a) physically observed, (b) been told by someone present, or (c) read from a document it accessed.
+**Rule:** The agent reports only what it has (a) observed or perceived, (b) been told by someone present, or (c) read from a document it accessed.
 
 **Line-of-sight constraint:** Cannot report NPC locations or actions unless in the same space or via communication link.
 
 **Violations:** Knowing NPC locations without line-of-sight, knowing facts from unaccessed documents, stating NPC internal states, presenting threat mechanics as known facts.
+
+**Narrator scoping note:** If your game has a character/consciousness narrator, that narrator's established perceptual abilities count as valid channels. A character who can "feel the seams in edited reality" can report that perception — it's not an epistemic violation, it's the character's defined mode of knowing. The ban is on unexplained knowledge, not on the character's established capabilities. See Section E for multi-narrator scoping.
 
 ### A4. actionSalience
 
@@ -110,6 +116,12 @@ Agent describes things as terrifying, horrifying, or nightmarish. Agent doesn't 
 ### C5. Too much lore confidence
 Agent speaks knowledgeably about threat types, faction strategy, or world mechanics. It's a field operative, not a theorist. Describe encounters, not understanding.
 
+### C6. Too much blocking
+Scene opens with transit geometry — where the agent is, where they move, what they approach — before consciousness or content. "I stop at the entrance. I scan the room. Six chairs. A reception desk." Stage directions first, experience nowhere. Movement is the vehicle, not the content. (See also A2 — ordering is flexible, but defaulting to blocking-first is a failure pattern.)
+
+### C7. Too much provenance
+Every claim carries a sourcing paragraph. The agent says "she is lying" and then immediately dumps three sentences of evidence. In natural dialogue, the agent states the conclusion; the player asks for details if they want them. Provenance emerges through interaction, not exposition.
+
 ---
 
 ## D. Voice Constraints
@@ -119,6 +131,8 @@ If agents are non-human entities: no physical sensation references (teeth, skin,
 
 ### D2. Only witnessable facts
 No backstory. No "someone did X" unless direct evidence is in view. No omniscient deductions.
+
+**Narrator scoping note:** For a consciousness narrator, "witnessable" includes the character's established perceptual abilities. A character who feels that a place has been disturbed can report that — it's witnessed through their mode of perception. The ban is on omniscient knowledge the character has no channel to receive. See Section E.
 
 ### D3. Horror/tension through implication
 Contradiction, agency where there shouldn't be, causality running wrong. Never stated explicitly. The reader sees what the agent can't.
@@ -137,20 +151,61 @@ All readouts use categorical bands (e.g., NOMINAL / DEGRADED / CRITICAL). Never 
 
 ---
 
-## E. Campaign/Seasonal Writing Standards
+## E. Multi-Narrator Scoping
+
+When a game has multiple narration layers — agent consciousness + camera observer, PC narration + GM narration, character thoughts + environmental description — rules must be scoped to each narrator independently. Applying the same rules uniformly creates structural contradictions that produce compliance prose.
+
+### E1. Identify your narrators
+
+Common narrator types in games:
+- **Character/consciousness narrator** — reports experience, perception, felt quality. Inside the experience.
+- **Camera/observer narrator** — reports observable behavior, physical evidence. Outside the experience.
+- **System/intel narrator** — reports data, comparisons, analysis. The information layer.
+
+Each narrator has a fundamentally different relationship to what it can report.
+
+### E2. Tag rules by narrator
+
+Every rule in your quality checklist should specify which narrator(s) it applies to. Common scoping:
+
+| Rule type | Camera/observer | Character/consciousness |
+|---|---|---|
+| Observable behavior only | Yes | **No** — character reports perception |
+| No internal states | Yes (for NPCs) | **No** — character IS internal state |
+| Sourced knowledge | Strict — camera needs evidence | Loose — character can state conclusions |
+| Action/body verbs | No — observation verbs | Yes — inside the experience |
+| Show-don't-tell | Yes | Partially — character can state perception |
+
+Rules that apply to both narrators: no genre-savviness, no decorative language, banned terms, NPC dialogue rules.
+
+### E3. The canonical contradiction
+
+The most common failure: an "observable only" rule applied to a narrator whose purpose is consciousness. "Could a camera see it?" kills a character's strange perception, felt wrongness, or internal experience. The camera test applies to the camera narrator, not to the consciousness. If your game has a character narrator, that narrator's content IS the non-observable.
+
+### E4. Independent information
+
+Each narrator should provide information the other can't. If both narrators say the same thing, one is redundant. The camera shows what the character can't see about themselves. The character reports what the camera can't perceive. When both channels tell different stories about the same moment, the player has a real decision to make.
+
+### E5. Constraint audit
+
+When adding rules to multi-narrator systems, contradictions accumulate faster because each new rule may be valid for one narrator and invalid for another. Run the constraint audit (see [constraint-audit.md](constraint-audit.md)) more frequently — every 3 new rules instead of every 5.
+
+---
+
+## F. Campaign/Seasonal Writing Standards
 
 For games with recurring narrative cycles (daily feeds, seasonal arcs, bulletins).
 
-### E1. Tuesday Test
+### F1. Tuesday Test
 "A system/process does X, which shouldn't be possible — here's the logged symptom." Every anomaly description must pass this concreteness test.
 
-### E2. Anomaly/threat as protagonist
+### F2. Anomaly/threat as protagonist
 The thing that's wrong is the hook. Not the response to it.
 
-### E3. Concrete first, abstract second
+### F3. Concrete first, abstract second
 Specific observable detail before any interpretation.
 
-### E4. No invented jargon
+### F4. No invented jargon
 Use the project's documented vocabulary. Don't create new terms that aren't in the naming guide.
 
 ---
@@ -180,10 +235,19 @@ Reading rules before writing is necessary but **not sufficient**. The writer's c
 
 **The fix: a two-pass enforcement protocol.**
 
+### Character specs are writing prompts. Checklists are verification.
+
+This distinction sounds small. It changes everything about the output.
+
+- **Writing prompt:** character spec (logline, personality, secret, voice model) + situation + beat. "You are this character. You're walking into this place. Something is wrong. Talk to your handler."
+- **Verification:** checklists run AFTER writing to catch structural violations. "Did the agent diagnose instead of describe? Did an NPC never speak? Are there more than 2 anomaly tells?"
+
+Writing FROM checklists produces compliance prose — every line exists to satisfy a checkbox. Writing AS the character and then checking specs produces fiction. The failure mode: stacking specs until the writing prompt becomes a compliance audit.
+
 ### Writing Mode
-1. Load all narrative rules into active context (via skill invocation)
-2. Write the text with rules as hard constraints
-3. **Launch a separate review agent** (mandatory — not optional, not "if time permits")
+1. Load **character/voice spec** as the writing prompt — who the character is, not what rules to follow
+2. Write the text as the character in the situation
+3. **Launch a separate review agent** with the checklists (mandatory — not optional, not "if time permits")
 
 ### Review Mode (the review agent)
 Launch a `general-purpose` Task agent that:
@@ -204,11 +268,12 @@ This is the quality gate skill pattern applied to narrative text. See `skill-aut
 
 To create a project-specific narration skill from this framework:
 
-1. **Copy the quick-scan checklist** and add your game's banned terms
-2. **Define your voice model** — create four-constraint definitions for each agent/narrator
-3. **Add vocabulary rules** — your game's canonical terms and banned synonyms
-4. **Add number display rules** — what numeric info (if any) the player sees, and in what format
+1. **Identify your narrators** — how many narration layers does your game have? Tag each rule by narrator (Section E)
+2. **Separate writing prompts from verification** — character/voice specs are writing prompts; checklists are verification tools. Keep them in separate files
+3. **Define your voice model** — create four-constraint definitions for each agent/narrator
+4. **Add vocabulary rules** — your game's canonical terms and banned synonyms
 5. **Create a `/narration` skill** in `.claude/skills/narration/` that references this framework and adds your local rules
-6. **Wire the review gate** — the skill's SKILL.md should mandate launching a review agent after writing, not just loading rules before writing
+6. **Wire the review gate** — the skill's SKILL.md should mandate launching a review agent with checklists after writing, not loading checklists before writing
+7. **Schedule constraint audits** — see [constraint-audit.md](constraint-audit.md) to prevent rule accumulation from producing compliance prose
 
 See `workflows/skill-authoring.md` for how to build the skill (especially the quality gate pattern).

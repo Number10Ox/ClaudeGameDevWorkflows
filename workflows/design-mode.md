@@ -18,21 +18,23 @@ Use when implementing a settled decision. See [execution-mode.md](execution-mode
 
 ---
 
-## The Canon (5 docs, no more)
+## The Canon
 
 Claude reads these automatically via CLAUDE.md. They are the only source of truth.
 
 | Doc | What it holds |
 |-----|--------------|
 | **GamePillars.md** | Why the game exists. Audience, tone, core loop, pillars. |
-| **SettledDesign.md** | Current game design: mechanics, UI, terms, invariants, glossary. The single source of truth for "what is the game right now." |
-| **TechnicalDesign.md** | Engineering: data model, architecture, success criteria, deliverables. |
-| **Now.md** | Active question, mode (DESIGN/EXECUTION), layer, current state, open questions backlog. Tiny. Always current. |
+| **Roadmap.md** | Current + next milestone. What's playable at each, what systems are required, what's deferred. |
+| **Now.md** | Active question, mode (DESIGN/EXECUTION), current state, open questions backlog. Tiny. Always current. |
 | **Decisions.md** | Chronological decision log with rationale, deprecated terms, and revisit triggers. |
+| **Per-system living docs** | One per major system (e.g., `MissionGameplay.md`). Current reality: how the system works, its interfaces, scope, open questions. See [living-doc-template.md](../templates/living-doc-template.md). |
 
-**No separate docs for:** prototype history (git is the history), open questions (bottom of Now.md), glossary (inside SettledDesign.md), design invariants (inside SettledDesign.md).
+Living docs replace a monolithic "SettledDesign.md" approach. Instead of one doc for the whole game, each system owns its own living doc, updated after implementation. Create a living doc when you first need to change a system — don't pre-create empty ones.
 
-> **Adapt this:** Your doc names might differ. A board game might replace TechnicalDesign.md with ComponentSpec.md. A narrative game might add WritingGuide.md. Keep the count to 5-7 max — more than that and nothing gets read.
+**New systems:** When DESIGN mode produces a settled design for a system that doesn't exist yet, the output is a design spec. That spec becomes the system's living doc after implementation (see [execution-mode.md](execution-mode.md) § New System Flow).
+
+> **Adapt this:** Your doc names might differ. A board game might add ComponentSpec.md. A narrative game might add WritingGuide.md. The per-system living docs scale naturally — you create them as systems emerge, not upfront.
 
 ---
 
@@ -135,13 +137,13 @@ When a design question needs external reference — **research before proposing.
 1. **Classify before discussing.** Every new idea gets tagged with its hierarchy level before analysis begins.
 2. **One active question at a time.** Everything else goes to the backlog.
 3. **Link hypotheses to pillars.** A hypothesis without a pillar connection is unmoored — it might be interesting but it doesn't serve the game.
-4. **Design docs are canon, not vibes.** Changing an invariant requires a Change Proposal with rationale.
+4. **Living docs are canon, not vibes.** Changing an invariant requires a Change Proposal with rationale.
 5. **Build forward, don't backfill.** If something seems missing, design it new. Don't resurrect old ideas from git history. If an old idea is worth revisiting, quarantine it as "Candidate Re-adoption (NOT ACTIVE)" first.
 6. **Out-of-scope gets logged, not lost.** Questions outside the current mode/layer get recorded as open questions or future tasks.
 7. **Sessions end with write-back.** Every design session produces:
    - Settled decisions → Decision Log entries
    - Updated open questions → Now.md
-   - Updated source of truth → SettledDesign.md (if anything is now Established)
+   - Updated living docs → if any design calls were made this session
 
 ---
 
@@ -172,10 +174,10 @@ After changing terminology, phase names, UI labels, or workflow structure, audit
 4. **CLAUDE.md consistency** — session start references must match what docs actually exist
 
 Canonical sources (when stated in two places, the canonical source wins):
-- **Mechanics, UI labels, glossary** → SettledDesign.md
+- **System mechanics, behavior, interfaces** → per-system living docs
 - **Design rationale, deprecated terms** → Decisions.md
 - **Game identity, pillars, tone** → GamePillars.md
-- **Data model, engineering** → TechnicalDesign.md
+- **Milestones, deferred work** → Roadmap.md
 - **Current focus** → Now.md
 
 ---
@@ -185,7 +187,7 @@ Canonical sources (when stated in two places, the canonical source wins):
 Run this before ending any DESIGN mode session. Takes 2-3 minutes and saves the next session from starting blind.
 
 - [ ] **Decisions logged** — Every decision made this session has an entry in Decisions.md (date, layer, what/why/deprecated/revisit-if)
-- [ ] **SettledDesign.md updated** — Anything that moved from Speculative to Established is written back
+- [ ] **Living doc(s) updated** — If any design calls were made, the relevant system doc reflects them
 - [ ] **Now.md current** — Active question reflects where you actually stopped (not where you planned to stop). Open questions backlog includes anything that came up and wasn't resolved
 - [ ] **Mode correct** — If you're switching to EXECUTION next, Now.md says so
 - [ ] **Commit** — All doc changes committed with a descriptive message
@@ -197,4 +199,4 @@ If you skip this, the next session starts with stale context and you'll spend 15
 ## If You Do Only Two Things
 
 1. **Classify** every new idea into the hierarchy before discussing it
-2. **Write back** at session end (decisions to Decisions.md, state to SettledDesign.md, Now.md current)
+2. **Write back** at session end (decisions to Decisions.md, state to living docs, Now.md current)

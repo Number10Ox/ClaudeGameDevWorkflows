@@ -1,5 +1,7 @@
 # SettledDesign.md Template
 
+> **Consider using per-system living docs instead.** The [living-doc-template.md](living-doc-template.md) approach scales better as system count grows — each system owns its own doc, updated after implementation. SettledDesign.md works for small projects or early prototypes where one doc covers everything. Transition to living docs when the monolithic doc starts exceeding ~200 lines or when multiple systems need independent documentation.
+
 > Copy this to your project as `Docs/SettledDesign.md`.
 > This is the single source of truth for "what IS the game right now."
 > Not history, not proposals — current state only. Updated via decision log entries.

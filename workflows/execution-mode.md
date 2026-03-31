@@ -6,19 +6,35 @@ Practices for implementing game features with Claude Code. Use this mode when wo
 
 ---
 
-## Deliverable Flow
+## Two Flows
 
-Work in deliverables — discrete chunks with clear acceptance criteria.
+Every deliverable follows one of two flows depending on whether the system exists yet. Both share the same deliverable files, checkpoints, red team, and review processes described below.
 
-### The Cycle
+### New System Flow
 
-1. **"Start [deliverable]"** — begin planning
-2. **Plan** — write acceptance criteria and plan to deliverable files, or use `/plan_with_team` to orchestrate
-3. **Red team** — attack the plan for ambiguities, underspecified behaviors, and minimal-wrong-pass implementations. Fix the plan before implementing.
-4. **Implement with checkpoints** — builder agents execute tasks, validator agents verify. For larger stories, define checkpoint gates (see below)
-5. **Code review** — structured review of all changed files (see Code Review below)
-6. **"Sign off"** — triggers the sign-off checklist
-7. **Move on** — start next deliverable
+Use when building a system for the first time. The design spec written during DESIGN mode becomes the system's living doc after implementation.
+
+1. **Plan** — write acceptance criteria, behavioral specs, and plan to deliverable files
+2. **Red Team** — attack the plan for ambiguities, gaps, and wrong-feeling minimal passes
+3. **Review** — user reviews plan + red team findings, approves or revises
+4. **Implement with checkpoints** — build, validate at gates
+5. **Code Review** — structured review of all changed files (see Code Review below)
+6. **Sign off** — run checklist
+7. **Update system doc** — design spec becomes the system's living doc, updated to reflect what was actually built (see [living-doc-template.md](../templates/living-doc-template.md))
+8. **Move on**
+
+### Evolution Flow
+
+Use when changing a system that already has a living doc. The living doc is both the input (what exists now) and the output (updated to reflect the change).
+
+1. **Proposal** — what you want to change, referencing the living doc. Format: "Currently the system does X (see {Doc}.md § {Section}). Change it to do Y. This is needed for Milestone N because Z."
+2. **Red Team** — attack the proposal against the living doc. Focus: does this change break existing behavior? Are interfaces with other systems affected?
+3. **Review** — user reviews proposal + red team findings
+4. **Deliverable with ACs** — scoped from the proposal
+5. **Implement**
+6. **Code Review + Sign off**
+7. **Update living doc** — the living doc now describes the new behavior. Cross-references to other system docs are checked and updated if interfaces changed.
+8. **Move on**
 
 ### Deliverable Files
 
@@ -49,12 +65,14 @@ Typical checkpoints:
 
 Before switching from DESIGN to EXECUTION mode, check that the slice is fully specified. If any of these fail, stay in DESIGN and resolve them first.
 
+- [ ] **System doc exists** for the system being changed — or writing one is the first deliverable (see [living-doc-template.md](../templates/living-doc-template.md))
 - [ ] **`D{N}-acceptance.md` exists and is agreed** — concrete, testable criteria in a file the user has reviewed (not "make it work")
 - [ ] **`D{N}-plan.md` exists** — implementation plan written to a file, not a chat scroll
 - [ ] **Architectural alignment verified** — plan cross-referenced against Decisions.md (or your equivalent decision log). Any architectural constraint that applies to this deliverable is explicitly addressed in the plan, not assumed. The user can't be expected to catch violations of decisions you already agreed on together — this is the AI's responsibility.
 - [ ] **Unknowns resolved or deferred** — no open design questions block the implementation. Any that remain are explicitly logged and stubbed around
 - [ ] **Constraints pinned** — project constraints (type safety, purity, determinism, etc.) are documented and non-negotiable
 - [ ] **Behavioral specs written** — human-authored specs describing what the player experiences (see Story Mapping and Behavioral Specs below). These are the contract Claude implements against.
+- [ ] **Milestone reference** — which milestone this deliverable serves (see [roadmap template](../templates/roadmap-md.md))
 
 > **Adapt this:** The specific checks depend on your project. A narrative game might add "dialogue trees reviewed." A multiplayer game might add "networking assumptions validated." The principle is: EXECUTION should be able to run without design back-and-forth.
 
@@ -85,7 +103,7 @@ Claude defaults to technical decomposition ("build the engine, then the UI, then
 
 ### Where it lives
 
-The story map is a DESIGN-mode artifact that bridges to EXECUTION. It can live in your technical design doc, in SettledDesign.md, or as a standalone `Docs/StoryMap.md` — wherever your deliverable breakdown lives. The map generates the deliverables, not the other way around.
+The story map is a DESIGN-mode artifact that bridges to EXECUTION. It can live in your technical design doc, in a system's living doc, or as a standalone `Docs/StoryMap.md` — wherever your deliverable breakdown lives. The map generates the deliverables, not the other way around.
 
 > **Adapt this:** Your journey activities are game-specific. A roguelike maps: select loadout → enter dungeon → encounter rooms → boss → extract → upgrade. A narrative game maps: receive quest → explore → dialogue → choice → consequence → reflect.
 
@@ -131,6 +149,12 @@ Once a slice enters EXECUTION, its behavioral specs are frozen. If Claude sugges
 - If the spec needs significant revision, stop and return to DESIGN mode
 
 This prevents "boiled frog" design drift where the AI nudges you into accepting a slightly different interpretation across many small adjustments.
+
+### Flow-specific red team focus
+
+For **new systems**, prioritize "is this design coherent?" — ambiguity scans, minimal-wrong-pass tests, and objective correctness checks.
+
+For **evolution proposals**, prioritize contradiction checks against the existing system doc and interface impact — does this change break existing behavior? Are interfaces with other systems affected? Check cross-references in both directions.
 
 ### Red-teaming your spec
 
@@ -217,7 +241,7 @@ When the user says "sign off" or similar — run ALL of these:
 - [ ] All acceptance criteria have passing tests
 - [ ] Edge cases identified and tested
 - [ ] No regressions: full test suite passes clean
-- [ ] Technical design doc updated if architecture changed
+- [ ] System doc updated to reflect what was built (implementation state)
 - [ ] Code review passed — no outstanding FIX items (see Code Review above)
 - [ ] UX reachability check passed (if UI-touching)
 - [ ] Visual review passed (if UI-touching) — design system rules checked, blast radius traced for shared element changes, visual test plan generated, screenshots verified
@@ -436,9 +460,10 @@ Format: single markdown file, temp directory with just relevant files, or clipbo
 Run this before ending any EXECUTION mode session. Takes 2-3 minutes.
 
 - [ ] **Now.md current** — Active task reflects where you actually stopped. If mid-deliverable, note what's done and what's next
+- [ ] **System doc updated** — If any design calls were made during this session, the relevant living doc reflects them
 - [ ] **Design questions logged** — Any design questions that came up during implementation are in Now.md's open questions (not resolved inline)
 - [ ] **Tests green** — If you made code changes, the test suite passes. Don't leave a session with failing tests if you can avoid it
-- [ ] **Technical design doc updated** — If you changed architecture, data model, or interfaces, the doc reflects it
+- [ ] **Doc sweep** — If this deliverable modified workflow docs, CLAUDE.md, or canon: scan your tracking docs for stale references to what changed
 - [ ] **Commit** — All code and doc changes committed. Work-in-progress is fine as a commit — uncommitted changes are not
 
 If you're mid-deliverable and stopping for the day, a short note in Now.md ("Finished tasks 1-3 of spec X, task 4 is next, tests green") is worth more than a perfect commit message.
@@ -459,7 +484,7 @@ Solo devs validate implicitly. Teams need explicit sign-off as part of the Execu
 
 ### Doc ownership
 
-Canon docs (SettledDesign.md, Now.md, Decisions.md) need clear edit rights when multiple people touch them. A simple rule: anyone can propose changes, but the doc owner merges them. Now.md is owned by whoever is actively working. SettledDesign.md changes go through the write-back ritual. Decisions.md is append-only — anyone can add entries.
+Canon docs (system living docs, Now.md, Decisions.md) need clear edit rights when multiple people touch them. A simple rule: anyone can propose changes, but the doc owner merges them. Now.md is owned by whoever is actively working. Living docs are updated via the evolution flow (proposal → review → build → update). Decisions.md is append-only — anyone can add entries.
 
 > **Adapt this:** The level of coordination overhead depends on team size. Two people might just talk. Five people need explicit ownership. Twenty people need a tool. Don't add process faster than you add people.
 

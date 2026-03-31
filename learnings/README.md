@@ -195,6 +195,36 @@ Showcase v4 shipped with raw numbers, diagnosis-over-observation, and missing ha
 
 ---
 
+### 2026-03-30 (Context Drift): Multi-narrator rules must be scoped per narrator
+
+A quality checklist with ~40 rules applied uniformly to both a consciousness narrator (agent voice) and a camera narrator (server/world voice) produced technically correct, creatively dead prose. The canonical contradiction: "observable only" (correct for a camera) kills consciousness (which IS the non-observable). "Body verbs" (correct for a consciousness inside an experience) conflicts with "observable only" (correct for a camera outside). The agent wrote census data instead of perception because the camera test was applied to both narrators.
+
+**Rule extracted:** When a game has multiple narration layers, every quality rule must be tagged with which narrator it applies to. Rules that are correct for one narrator are often wrong for another. The contradiction is invisible until you test whether a single sentence can satisfy both.
+
+**Workflow impact:** Added Section E (Multi-Narrator Scoping) to narrative-quality.md. Updated A2 and A3 with narrator scoping notes.
+
+---
+
+### 2026-03-30 (Context Drift): Constraint audit prevents compliance prose
+
+Creative rules accumulate monotonically: identify gap → write rule → apply rule → identify new gap → write new rule. By the time the count hits thirty, the writing optimizes for compliance rather than quality. A playtest graded D despite every checklist item being satisfied — the formula was visible. Three-question audit: (1) count constraints per artifact type (danger zone: >15), (2) test every rule pair for contradiction, (3) run best lines against every rule — if the best line violates a rule, the rule is wrong. First audit found 8 contradictions and cut constraints from ~40 to ~15.
+
+**Rule extracted:** Rules should be deprecated as aggressively as they're created. Every rule addition should also be a rule review. Schedule audits every 5 new rules, 2 weeks, or quality grade drop.
+
+**Workflow impact:** Created workflows/constraint-audit.md. Added E5 (constraint audit reference) to narrative-quality.md.
+
+---
+
+### 2026-03-30 (Context Drift): Character specs are writing prompts, checklists are verification
+
+Writing FROM checklists produces compliance prose — every line exists to satisfy a checkbox. Writing AS the character and then checking specs produces fiction. The consciousness spec (logline, character diamond, secret, desire engine) was the one document NOT causing problems — and the one most consistently unfollowed, because following it meant violating checklist rules. The fix: load the character spec as the writing prompt, run checklists as verification AFTER writing, never during.
+
+**Rule extracted:** Separate writing prompts (who is this character, what do they want, what are they experiencing) from verification tools (did the output avoid banned patterns). The spec stack grows until the writing prompt becomes a compliance audit. When that happens, the output is structurally correct and experientially dead.
+
+**Workflow impact:** Updated the Mandatory Review Gate in narrative-quality.md with the writing-prompt vs verification distinction. Changed Writing Mode step 1 from "load rules" to "load character spec."
+
+---
+
 ### 2026-03-12 (Context Drift): Passive context beats active retrieval for agent knowledge
 
 Vercel's AGENTS.md evaluation data showed that embedding domain knowledge directly in instruction files (AGENTS.md, CLAUDE.md) outperforms teaching agents to use retrieval tools (like skills or MCP servers) to look up the same knowledge. The key insight: agents deciding *when* to look something up is itself a failure mode — they don't know what they don't know. Passive context (always loaded) eliminates that decision entirely.

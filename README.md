@@ -28,7 +28,7 @@ The workflow principles are the same whether you're solo or on a cross-disciplin
 ### Starting a new project
 
 1. Copy `templates/claude-md.md` to your project as `.claude/CLAUDE.md`
-2. Copy the document templates you need from `templates/` into your project's `Docs/` folder
+2. Copy the document templates you need from `templates/` into your project's `Docs/` folder (start with Now.md, Decisions.md, GamePillars.md, and Roadmap.md — create living docs per system as needed)
 3. Copy `templates/claude-commands/` into `.claude/commands/` and `.claude/agents/`
 4. Copy `templates/claude-hooks/` into `.claude/hooks/` and wire up `templates/settings-json.md` as `.claude/settings.json`
 5. Create `Docs/deliverables/` for D{N} acceptance and plan files
@@ -50,11 +50,14 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for how to add learnings, propose workflo
 | File | What it covers |
 |------|---------------|
 | [workflows/design-mode.md](workflows/design-mode.md) | Game design process: layers, one-question discipline, write-back ritual, perspective passes |
-| [workflows/execution-mode.md](workflows/execution-mode.md) | Engineering process: plan-first, verification loops, sign-off checklists, parallel dev |
+| [workflows/execution-mode.md](workflows/execution-mode.md) | Engineering process: two flows (new system / evolution), plan-first, verification loops, sign-off checklists, parallel dev |
 | [workflows/llm-crosscheck.md](workflows/llm-crosscheck.md) | When and how to use external LLMs (ChatGPT, Gemini) to stress-test your design |
 | [workflows/ui-specification.md](workflows/ui-specification.md) | UI spec workflow: when to write specs, the implementation contract, verification process |
 | [workflows/ui-testing.md](workflows/ui-testing.md) | UI testing pyramid: structural assertions, functional flows, visual regression — spec-driven, Claude-written |
 | [workflows/build-discipline.md](workflows/build-discipline.md) | Response-level rules for execution: artifact-first format, drift headers, Three Anchors, pass isolation, validation discipline |
+| [workflows/narrative-quality.md](workflows/narrative-quality.md) | Narrative quality framework: structural rules, voice rules, multi-narrator scoping, review gate |
+| [workflows/constraint-audit.md](workflows/constraint-audit.md) | Periodic audit to prevent creative rule accumulation from producing compliance prose |
+| [workflows/skill-authoring.md](workflows/skill-authoring.md) | How to create effective Claude Code skills: point-of-use principle, quality gate pattern |
 
 ### Templates
 
@@ -63,7 +66,9 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for how to add learnings, propose workflo
 | [templates/claude-md.md](templates/claude-md.md) | `.claude/CLAUDE.md` | Claude Code configuration — session start, constraints, style |
 | [templates/now-md.md](templates/now-md.md) | `Docs/Now.md` | Tiny, always-current state snapshot |
 | [templates/decisions-md.md](templates/decisions-md.md) | `Docs/Decisions.md` | Chronological decision log with rationale |
-| [templates/settled-design-md.md](templates/settled-design-md.md) | `Docs/SettledDesign.md` | Single source of truth for current game design |
+| [templates/living-doc-template.md](templates/living-doc-template.md) | `Docs/{SystemName}.md` | Per-system living doc — current reality for one system (recommended) |
+| [templates/roadmap-md.md](templates/roadmap-md.md) | `Docs/Roadmap.md` | Forward-looking milestone tracker: current + next |
+| [templates/settled-design-md.md](templates/settled-design-md.md) | `Docs/SettledDesign.md` | Monolithic game design doc (for small projects; see living docs for scaling) |
 | [templates/game-pillars-md.md](templates/game-pillars-md.md) | `Docs/GamePillars.md` | Vision, pillars, anti-goals |
 | [templates/tdd-md.md](templates/tdd-md.md) | `Docs/TDD.md` | Technical design document — architecture, subsystems, constraints, deliverables |
 | [templates/screen-spec.md](templates/screen-spec.md) | `Docs/screen-spec-[name].md` | UI contract for a screen — layout, elements, data, states, navigation |
