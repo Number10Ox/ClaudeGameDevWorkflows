@@ -49,6 +49,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for how to add learnings, propose workflo
 
 | File | What it covers |
 |------|---------------|
+| [workflows/development-lifecycle.md](workflows/development-lifecycle.md) | **Top-level:** milestones, deliverables, plans, session start, mode entry gates. Connects design and execution modes. |
 | [workflows/design-mode.md](workflows/design-mode.md) | Game design process: layers, one-question discipline, write-back ritual, perspective passes |
 | [workflows/execution-mode.md](workflows/execution-mode.md) | Engineering process: two flows (new system / evolution), plan-first, verification loops, sign-off checklists, parallel dev |
 | [workflows/llm-crosscheck.md](workflows/llm-crosscheck.md) | When and how to use external LLMs (ChatGPT, Gemini) to stress-test your design |
