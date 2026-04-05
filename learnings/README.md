@@ -246,3 +246,37 @@ The fix: convert process gates from behavioral suggestions into mechanical code 
 **Rule extracted:** Two instruction types exist: output constraints (applied at generation time, always work) and process gates (require interrupting execution, fail in agentic mode). If you need X before Y, make X a code-path prerequisite of Y — not a prose instruction.
 
 **Workflow impact:** Added [process-gates-agentic-workflows.md](process-gates-agentic-workflows.md) to Learnings. Reinforces the point-of-use principle documented in skill-authoring.md.
+
+---
+
+### 2026-04-04 (Context Drift): Authored game content needs its own quality gate
+
+Narrative prose and authored game data (intel items, stat configs, NPC definitions, choice specs) fail in different ways. Narrative fails on voice, tone, and physicality. Authored data fails on semantic categorization — an item labeled as one type that's actually another, an item that does the handler's noticing instead of providing raw information, an item that belongs in a different field entirely. Three out of fourteen Alverton intel items had semantic quality issues that passed structural validation (correct schema, correct fields) but violated the authoring rules.
+
+The fix: a separate `/content-review` skill with its own checklist, distinct from `/narration`. Same two-pass architecture (rules during authoring + separate review agent after), different rules. Structural validation catches malformed data. Content review catches misclassified data.
+
+**Rule extracted:** Each content type that can fail semantically needs its own quality gate. "Quality gate" is a pattern, not a single skill. If narrative and game data share one gate, one set of rules will dominate and the other will be under-checked.
+
+**Workflow impact:** Added content-review skill template concept. Validates the quality gate pattern as a reusable architecture — the skill-authoring.md guide already documents it, and the templates/skills/quality-gate/ skeleton makes it copyable.
+
+---
+
+### 2026-04-04 (Context Drift): Hold-out reviewer catches what structured review misses
+
+The `/plan` skill's red team agent runs structured checks (D1-D6: ambiguity scan, minimal-wrong-pass, contradiction check). The Alverton v3 plan passed all six. An external review then found 5 issues — unnecessary parameter duplication, legacy type constraints not documented, vague extraction instructions, pre-existing behavior interactions. None fit a D1-D6 category.
+
+The fix: a second review agent ("hold-out reviewer") that gets NO construction context — only the finished artifact and reference docs. No checklist, no prescribed categories. It reads holistically and reports what it finds. The isolation is what makes it work: Task agents don't inherit conversation context, so the reviewer sees the artifact cold, the way an implementer would.
+
+**Rule extracted:** Structured review (checklist-driven) and holistic review (fresh-eyes read) catch different classes of issues. Neither subsumes the other. For high-stakes artifacts (plans, specs), run both in parallel.
+
+**Workflow impact:** Updated the plan skill template pattern. The hold-out reviewer concept generalizes beyond plans — any artifact reviewed by a structured agent benefits from a second holistic pass.
+
+---
+
+### 2026-04-04 (Context Drift): Cross-reference tables prevent eager doc loading
+
+Living docs accumulated "see also" references that Claude eagerly loaded at session start — 10+ docs read before any work began. Replaced with a "Related Docs" table at the top of each living doc: one-line description + "load when" trigger. Same progressive disclosure pattern as skill descriptions: always-visible summary, full content loaded only when relevant.
+
+**Rule extracted:** Cross-references between docs should follow the same pattern as skill descriptions — a compact index that's always in context, with full content loaded on demand. "Load when" triggers replace eager loading with just-in-time reads.
+
+**Workflow impact:** Updated living-doc-template.md concept. Reinforces the passive-context-with-lazy-loading principle from the "Passive context beats active retrieval" learning.
