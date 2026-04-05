@@ -77,6 +77,16 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for how to add learnings, propose workflo
 | [templates/claude-hooks/](templates/claude-hooks/) | `.claude/hooks/` | Audio notification scripts (macOS TTS) for lifecycle events |
 | [templates/claude-commands/](templates/claude-commands/) | `.claude/commands/` + `.claude/agents/` | Team orchestration, builder/validator agents |
 
+### Skill Templates
+
+Copyable skill skeletons for `.claude/skills/`. See [workflows/skill-authoring.md](workflows/skill-authoring.md) for the full guide.
+
+| Template | Pattern | What it does |
+|----------|---------|-------------|
+| [templates/skills/quality-gate/](templates/skills/quality-gate/) | Quality gate | Loads domain rules at point of use, enforces during work, launches a separate review agent after. The highest-value skill pattern. |
+| [templates/skills/doc-review/](templates/skills/doc-review/) | Quality gate | Reviews structured artifacts for gaps, regressions, ambiguities, contradictions. Generic version — adapt checks to your project. |
+| [templates/skills/session-start/](templates/skills/session-start/) | Reference | Loads essential project context at session start. Converts CLAUDE.md "read X" instructions into a reliable code path. |
+
 ### Recipes
 
 Short, situational answers to common problems. See [recipes/README.md](recipes/README.md).

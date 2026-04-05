@@ -234,3 +234,15 @@ For game dev projects with large doc sets, the practical application is a **comp
 **Rule extracted:** When project knowledge is critical (vocabulary, architecture decisions, design constraints), put it in the instruction file or put an index entry pointing to it. Don't rely on the agent to decide to look it up — the retrieval decision is the weak link.
 
 **Workflow impact:** Added "Retrieval-Led Reasoning" section to the CLAUDE.md template with guidance on doc indexes. Added Vercel article references to execution-mode.md.
+
+---
+
+### 2026-04-04 (Context Drift): Process gates fail silently in agentic mode
+
+Instructions like "read the spec before writing" work in normal chat but fail reliably in agentic mode. The model is in an execution loop with strong task momentum — a meta-instruction to stop, read a file, integrate it, then resume requires a workflow interrupt that competes against the generation trajectory. The instruction is in context, it's "seen," but it doesn't trigger the interrupt. Bolding, repeating, or adding "THIS IS CRITICAL" doesn't change the dynamic.
+
+The fix: convert process gates from behavioral suggestions into mechanical code paths. Claude Code skills force file reads into context before generation begins — the spec loads because the skill's execution path requires it, not because the model remembers. This is why quality gate skills (narration, plan, visual, content-review) are the highest-value skill pattern.
+
+**Rule extracted:** Two instruction types exist: output constraints (applied at generation time, always work) and process gates (require interrupting execution, fail in agentic mode). If you need X before Y, make X a code-path prerequisite of Y — not a prose instruction.
+
+**Workflow impact:** Added [process-gates-agentic-workflows.md](process-gates-agentic-workflows.md) to Learnings. Reinforces the point-of-use principle documented in skill-authoring.md.
