@@ -86,6 +86,7 @@ Copyable skill skeletons for `.claude/skills/`. See [workflows/skill-authoring.m
 | [templates/skills/quality-gate/](templates/skills/quality-gate/) | Quality gate | Loads domain rules at point of use, enforces during work, launches a separate review agent after. The highest-value skill pattern. |
 | [templates/skills/doc-review/](templates/skills/doc-review/) | Quality gate | Reviews structured artifacts for gaps, regressions, ambiguities, contradictions. Generic version — adapt checks to your project. |
 | [templates/skills/session-start/](templates/skills/session-start/) | Reference | Loads essential project context at session start. Converts CLAUDE.md "read X" instructions into a reliable code path. |
+| [templates/skills/doc-audit/](templates/skills/doc-audit/) | Discovery | Audits all markdown files for orphans, staleness, and superseded content. Run at milestone boundaries. |
 
 ### Recipes
 
