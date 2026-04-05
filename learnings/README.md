@@ -280,3 +280,63 @@ Living docs accumulated "see also" references that Claude eagerly loaded at sess
 **Rule extracted:** Cross-references between docs should follow the same pattern as skill descriptions — a compact index that's always in context, with full content loaded on demand. "Load when" triggers replace eager loading with just-in-time reads.
 
 **Workflow impact:** Updated living-doc-template.md concept. Reinforces the passive-context-with-lazy-loading principle from the "Passive context beats active retrieval" learning.
+
+---
+
+### 2026-04-04 (Context Drift): LLM game agents need a translation layer, not raw numbers
+
+Five related lessons from building LLM-driven game AI across ContextDrift-V0 and V2:
+
+1. **Engine thinks in numbers, agent thinks in situation.** LLMs reason well about identity and narrative but poorly about optimizing numbers. Always translate numeric state to qualitative descriptions before the LLM sees it. The engine keeps numbers as source of truth; a `stateToPrompt()` layer converts to named states and narrative pressure.
+
+2. **Three-layer AI architecture.** Every working game AI uses the same stack: (1) Personality (static traits, doctrine, identity), (2) Strategic decision (LLM per-turn, reads qualitative state), (3) Deterministic execution (engine validates and applies). The LLM replaces only the goal-setting layer.
+
+3. **Personality as lens, not as numbers.** Faction identity should shape HOW the agent reads the board, not add numeric modifiers. The LLM reasons about "I am Choir — we spread, we share, we merge" better than "Embrace affinity: 4/5."
+
+4. **Bounded memory works.** ~600 chars of per-agent "previous thoughts" fed back each turn produces multi-turn strategic coherence without exploding token costs. The agent writes its own summary of what matters.
+
+5. **Validator catches, not crashes.** LLM outputs will include invalid actions. A deterministic validator that silently removes invalid actions and logs them is essential.
+
+**Rule extracted:** The LLM is a goal-setting layer, not an execution layer. Translate state to qualitative descriptions on the way in, validate actions deterministically on the way out. Everything in between is personality and strategy.
+
+**Workflow impact:** None yet — these are game-AI-specific patterns that should inform any project using LLMs as game agents. Candidate for a future `workflows/llm-game-ai.md`.
+
+---
+
+### 2026-04-04 (Context Drift): Don't mix aspirational vocabulary with prototype reality
+
+ContextDrift-V0's biggest trap: design docs described systems that didn't exist, and conversations used that vocabulary as if it were real mechanics. "Study procedures" and "SEAL missions" sounded specific but referred to nothing in the prototype. The vocabulary made the project feel further along than it was and masked design gaps.
+
+**Rule extracted:** If a term appears in design docs, it must map to something in the prototype or be explicitly marked "planned." Aspirational vocabulary that sounds like mechanics prevents you from noticing that the mechanic doesn't exist.
+
+**Workflow impact:** Reinforces the "design before building" principle in development-lifecycle.md. The Now.md template's constraint to reference only what exists (not what's planned) is a direct countermeasure.
+
+---
+
+### 2026-04-04 (Context Drift): Pillars must cover the competition model
+
+ContextDrift-V0 pillars described the medium (engine, agents, output) but not what kind of competition the game is. Every prototype fix defaulted to COIN war-game thinking because no pillar said otherwise. Separately, reactive balance fixes during execution bypassed pillar alignment checks entirely.
+
+**Rule extracted:** Game pillars must answer "what kind of game is this" — not just "what tools does it use." And execution-mode changes need pillar checks too; balance isn't exempt from design alignment.
+
+**Workflow impact:** Reinforces the game-pillars-md.md template. The `/plan` skill's pillar alignment check is the mechanical enforcement.
+
+---
+
+### 2026-04-04 (Context Drift): System accumulation without integration review produces a monolith
+
+After every 2-3 feature additions, evaluate: does the composition work? Individual systems can each be well-designed but interact badly. Separately, procedural variety without art direction (strong stylization constraints) produces noise, not atmosphere.
+
+**Rule extracted:** Integration review is a distinct activity from feature development. Schedule it explicitly — don't assume composition is correct because each part is correct.
+
+**Workflow impact:** The execution-mode.md verification loop covers individual deliverables but could benefit from a periodic integration check at milestone boundaries.
+
+---
+
+### 2026-04-04 (Context Drift): Audit authored content for extractable structure
+
+The Alverton fixture narrator audit found that every useful narrative line restated as a structured intelligence item (category + factual text). Half the lines were stage direction or redundant with the agent output. When authored content has a clear structural role, author the structure first and add prose only where it earns its place.
+
+**Rule extracted:** If narrative content can be decomposed into structured data without losing information, the structure is the real artifact and the prose is presentation. Author structure-first, not prose-first.
+
+**Workflow impact:** Reinforces the "structure-first intel authoring" pattern. Generalizes beyond intel to any authored game content where the mechanical function is clearer than the prose form.
