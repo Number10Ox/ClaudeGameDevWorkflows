@@ -13,6 +13,17 @@ Wire up lifecycle event hooks for audio notifications and process enforcement. S
 ```json
 {
   "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"$CLAUDE_PROJECT_DIR\"/.claude/hooks/session-start.sh",
+            "statusMessage": "Loading project context..."
+          }
+        ]
+      }
+    ],
     "PreToolUse": [
       {
         "matcher": "Edit|Write",
@@ -59,7 +70,7 @@ Wire up lifecycle event hooks for audio notifications and process enforcement. S
 }
 ```
 
-> **Adapt this:** The `skill-guard.sh` hook blocks writes to protected files unless the corresponding skill was invoked first. Edit the configuration variables at the top of the script to match your skill name and file pattern. See `claude-hooks/skill-guard.sh` for details.
+> **Adapt this:** The `session-start.sh` hook injects Now.md and Roadmap.md at session start — edit the file paths to match your project. The `skill-guard.sh` hook blocks writes to protected files unless the corresponding skill was invoked first — edit the configuration variables to match your skill name and file pattern. See `claude-hooks/` for details.
 
 ## Permission Overrides (settings.local.json)
 

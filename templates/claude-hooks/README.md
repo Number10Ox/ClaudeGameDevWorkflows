@@ -1,5 +1,17 @@
 # Hook Templates
 
+## Context Injection Hooks
+
+Hooks that inject project context into the model's context window at lifecycle boundaries. These replace process-gate instructions ("read X at session start") that fail silently in agentic mode.
+
+| Script | Event | What it does |
+|--------|-------|-------------|
+| `session-start.sh` | SessionStart | Injects Now.md + Roadmap (current & next milestone) at session start. Replaces "Session Start" instructions in CLAUDE.md. |
+
+**Why a hook, not a CLAUDE.md instruction:** "Read Now.md at session start" is a process gate — it requires the model to interrupt its execution trajectory to do a prerequisite. In agentic mode, this fails silently. The hook fires before the model generates anything, injecting the content with no decision required. See `learnings/process-gates-agentic-workflows.md`.
+
+**Why a hook, not a skill:** The session-start skill (in `skills/session-start/`) had the same problem — the model had to decide to invoke it, which is itself a process gate. The hook removes the decision entirely.
+
 ## Notification Hooks
 
 Audio notification hooks for macOS. These use the `say` command to announce Claude Code lifecycle events via text-to-speech.

@@ -81,6 +81,36 @@ If the model skips the skill's step 1 (the Bash command), the marker never gets 
 
 The pattern is generic. See `templates/claude-hooks/skill-guard.sh` — configurable variables at the top: `GUARD_NAME`, `FILE_PATTERN`, `SKILL_NAME`, `MARKER_TTL_SECONDS`. Pair with the quality gate skill template (`templates/skills/quality-gate/SKILL.md`), which includes the marker-writing step.
 
+## Fix Level 3: SessionStart Hooks for Context Injection
+
+Skills and skill-guard hooks solve the *point-of-use* problem: when the model is about to write a plan, the hook forces the skill to load. But there's a category of process gate that doesn't have a natural trigger point: **session start reads**.
+
+"Read Now.md and Roadmap.md at session start" is the most basic process gate in most projects. It was also the first one we wrote and the last one we caught — it survived multiple review passes of CLAUDE.md specifically looking for process gates. It survived because it *looks* like essential setup rather than a gate.
+
+### Why the Session Start Skill Failed
+
+We tried converting this to a skill (`skills/session-start/`). But the model still had to decide to invoke the skill at session start — which is itself a process gate. The instruction "invoke the session-start skill" suffers the same failure mode as the instruction it replaced.
+
+### What Happened
+
+The model was asked "what's next?" after completing a milestone. CLAUDE.md said "Read Roadmap.md when scoping new work." The model read Now.md (which said "Scope M6 (persistence)"), pattern-matched on the word "persistence," and answered from assumptions — never reading the roadmap. The roadmap said M6 was a *design* problem about how mission outcomes shape future missions. The model said it was technical infrastructure for save/load. The instruction was in context and was ignored.
+
+### The Fix
+
+A `SessionStart` hook that injects Now.md and the current/next milestones from Roadmap.md as `additionalContext` before the model generates anything. No decision required, no instruction to follow or skip. The content is just *there*.
+
+```bash
+# session-start.sh — fires on SessionStart event
+# Reads Now.md + Roadmap (current & next milestone)
+# Outputs JSON with additionalContext
+```
+
+See `templates/claude-hooks/session-start.sh` for the full template.
+
+### The General Principle
+
+If you need context loaded at session start, don't write "read X at session start" in CLAUDE.md. Use a SessionStart hook that injects the content automatically. Reserve CLAUDE.md for output constraints and factual reference — things the model applies as it generates, not things it needs to do before generating.
+
 ## TL;DR
 
 | Instruction type | Normal chat | Agentic mode | Fix |
@@ -88,5 +118,6 @@ The pattern is generic. See `templates/claude-hooks/skill-guard.sh` — configur
 | Output constraints ("never say X", "use term Y") | Works | Works | None needed |
 | Process gates ("read spec before writing") | Works | **Fails silently** | Skill (loads rules at point of use) |
 | Skill invocation ("use /plan before writing plans") | Works | **Fails silently** | Hook (blocks writes without skill) |
+| Session start reads ("read Now.md at start") | Works | **Fails silently** | SessionStart hook (injects content automatically) |
 
-The fix isn't better prompting. It's moving process gates out of prose instructions and into mechanical enforcement — skills for loading rules, hooks for enforcing skill invocation.
+The fix isn't better prompting. It's moving process gates out of prose instructions and into mechanical enforcement — skills for loading rules, hooks for enforcing skill invocation, and SessionStart hooks for context injection.

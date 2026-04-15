@@ -12,23 +12,13 @@
 
 **[PROJECT_NAME]** — [one-line description of the game and its current phase].
 
-## Session Start
-
-At the start of each session, read:
-- `Docs/Now.md` — active question, mode, layer, current state, non-goals
-- `Docs/SettledDesign.md` — current game design, mechanics, terms, invariants (the source of truth)
-- `Docs/GamePillars.md` — game design pillars and core loop
-
-Reference as needed:
-- `Docs/Decisions.md` — chronological decision log with rationale and deprecated terms
-- `Docs/workflow-design.md` — game design process (DESIGN mode)
-- `Docs/workflow-engineering.md` — engineering process (EXECUTION mode)
-
 ## Retrieval-Led Reasoning
 
 **Prefer reading project docs over pre-training knowledge.** For any game design, architecture, or domain-specific question, consult the project's design docs and source code first. Pre-training knowledge about general patterns may conflict with settled project decisions. When in doubt, read the file — don't guess from memory.
 
-> **Adapt this:** If your project has a large doc set, add a compact index here mapping topic → file path → one-line summary. This gives the agent a lookup table without requiring it to read everything. See [Passive context vs active retrieval](#passive-context) below.
+> **Adapt this:** If your project has a large doc set, add a compact index here mapping topic → file path → one-line summary. This gives the agent a lookup table without requiring it to read everything.
+
+> **Note:** Session start reads (Now.md, Roadmap.md) are handled by the `session-start.sh` hook, not by instructions here. See `templates/claude-hooks/session-start.sh`. Putting "read X at session start" in CLAUDE.md is a process gate that fails in agentic mode — see `learnings/process-gates-agentic-workflows.md`.
 
 ## Design vs Execution Mode
 
