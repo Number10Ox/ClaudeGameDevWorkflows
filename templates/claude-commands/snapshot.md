@@ -1,5 +1,7 @@
 # Snapshot — Write Back All Context to Docs
 
+> **Superseded by:** `templates/skills/snapshot/SKILL.md` — the skill format is the current Claude Code mechanism and includes living doc checks and a companion Stop hook for deterministic enforcement. This command format is kept for reference.
+>
 > Copy this to your project as `.claude/commands/snapshot.md`.
 > Adapt the checklist to match your project's canon docs.
 
