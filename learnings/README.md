@@ -333,6 +333,28 @@ After every 2-3 feature additions, evaluate: does the composition work? Individu
 
 ---
 
+### 2026-04-14 (Context Drift): Skills need hook enforcement — skill invocation is itself a process gate
+
+The `/plan` skill solved the "read the checklist before writing plans" problem — it loads rules at point of use instead of relying on session-start memory. But the model still skipped invoking the skill entirely. CLAUDE.md said "use `/plan` before writing plans" — a process gate instruction about invoking the process gate skill. Same failure mode, one level up.
+
+The fix: a PreToolUse hook (`skill-guard.sh`) that blocks writes to protected file patterns (e.g., `process/plan-*.md`) unless a timestamp marker exists. The skill's first instruction writes the marker via Bash. Two pieces forming a circuit: hook checks marker → blocks without it; skill writes marker → unblocks. `Skill` isn't a valid hook matcher, so the marker is the bridge.
+
+**Rule extracted:** Each layer of process enforcement creates a new "remember to use it" problem one level up. Skills solve "remember to load rules." Hooks solve "remember to use skills." Hooks are the terminal layer because they fire mechanically on tool events — no behavioral decision required.
+
+**Workflow impact:** Added skill-guard hook template to `templates/claude-hooks/`. Updated quality-gate skill template with marker step. Updated `process-gates-agentic-workflows.md` with "Fix Level 2" section. Updated settings template.
+
+---
+
+### 2026-04-14 (Context Drift): Existing implementation audit prevents rebuilding what exists
+
+A migration plan proposed building a `useScriptRunner` hook from scratch to translate MissionScriptRunner events into React state. DevMissionGamePage (1059 lines) already implemented exactly this — a grep for `MissionScriptRunner` in `client/` would have found it instantly. The plan went through multiple revisions before the existing implementation was discovered, wasting significant effort.
+
+**Rule extracted:** Before proposing to build any component, grep the codebase for existing implementations of the same interfaces. For each "create new X" step, search for existing consumers of the same API. Document findings before writing implementation steps.
+
+**Workflow impact:** Added D5 "Existing Implementation Audit" check to the plan skill checklist. The red team agent now greps for existing implementations as a mandatory step.
+
+---
+
 ### 2026-04-04 (Context Drift): Audit authored content for extractable structure
 
 The Alverton fixture narrator audit found that every useful narrative line restated as a structured intelligence item (category + factual text). Half the lines were stage direction or redundant with the agent output. When authored content has a clear structural role, author the structure first and add prose only where it earns its place.

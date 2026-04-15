@@ -8,17 +8,29 @@
 
 ## Hooks Configuration
 
-Wire up lifecycle event hooks for audio notifications. See [hook templates](claude-hooks/) for the scripts.
+Wire up lifecycle event hooks for audio notifications and process enforcement. See [hook templates](claude-hooks/) for the scripts.
 
 ```json
 {
   "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"$CLAUDE_PROJECT_DIR\"/.claude/hooks/skill-guard.sh",
+            "statusMessage": "Checking skill guard..."
+          }
+        ]
+      }
+    ],
     "Stop": [
       {
         "hooks": [
           {
             "type": "command",
-            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/stop.sh"
+            "command": "\"$CLAUDE_PROJECT_DIR\"/.claude/hooks/stop.sh"
           }
         ]
       }
@@ -28,7 +40,7 @@ Wire up lifecycle event hooks for audio notifications. See [hook templates](clau
         "hooks": [
           {
             "type": "command",
-            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/subagent_stop.sh"
+            "command": "\"$CLAUDE_PROJECT_DIR\"/.claude/hooks/subagent_stop.sh"
           }
         ]
       }
@@ -38,7 +50,7 @@ Wire up lifecycle event hooks for audio notifications. See [hook templates](clau
         "hooks": [
           {
             "type": "command",
-            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/notification.sh"
+            "command": "\"$CLAUDE_PROJECT_DIR\"/.claude/hooks/notification.sh"
           }
         ]
       }
@@ -46,6 +58,8 @@ Wire up lifecycle event hooks for audio notifications. See [hook templates](clau
   }
 }
 ```
+
+> **Adapt this:** The `skill-guard.sh` hook blocks writes to protected files unless the corresponding skill was invoked first. Edit the configuration variables at the top of the script to match your skill name and file pattern. See `claude-hooks/skill-guard.sh` for details.
 
 ## Permission Overrides (settings.local.json)
 
@@ -72,4 +86,4 @@ Personal permission overrides go in `.claude/settings.local.json` (not committed
 
 ---
 
-> **Adapt this:** The hooks are macOS-specific (using `say`). Replace the commands for your platform. The permission overrides depend on your project's toolchain.
+> **Adapt this:** The notification hooks are macOS-specific (using `say`). Replace the commands for your platform. The permission overrides depend on your project's toolchain.

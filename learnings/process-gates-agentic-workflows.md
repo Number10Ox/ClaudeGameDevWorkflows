@@ -41,7 +41,7 @@ This isn't about context window size, instruction clarity, or prompt engineering
 
 The first type works in any context: system prompts, MEMORY.md, agentic workflows, wherever. The second type works in normal chat (where there's no execution momentum to interrupt) but fails in agentic mode (where there is).
 
-## The Fix
+## Fix Level 1: Skills
 
 Convert process gates from behavioral suggestions into mechanical code paths.
 
@@ -49,11 +49,44 @@ Claude Code supports a skill system where invoking a skill forces file reads int
 
 The general principle: if you need an agentic LLM to reliably do X before Y, don't write "do X before Y" in a config file. Make X a prerequisite that executes automatically as part of Y's invocation. Treat process instructions the way you'd treat a CI pipeline — enforce them mechanically, don't rely on the developer (or the model) to remember.
 
+## Fix Level 2: Hooks That Enforce Skill Invocation
+
+Skills solve the problem *once the model invokes them*. But the model still has to decide to invoke the skill — and that decision is itself a process gate. CLAUDE.md says "use `/plan` before writing plans." The model reads this at session start and then writes plans directly without invoking the skill. The instruction to use the skill suffers the same failure mode as the instruction the skill was created to enforce.
+
+The fix: a **PreToolUse hook** that blocks writes to protected files unless the skill was invoked first.
+
+### How the Skill Guard Works
+
+Two pieces, forming a circuit:
+
+1. **Hook (plan-guard.sh)** — fires on Edit|Write. When the model tries to write to a protected file pattern (e.g., `process/plan-*.md`), the hook checks for a timestamp marker file. If the marker is missing or expired, the write is **denied** with a message telling the model to invoke the skill. If the marker exists and is fresh, the write is **allowed**.
+
+2. **Skill step 1** — the skill's first instruction tells the model to run a Bash command that writes the timestamp marker. When the model follows the skill, the marker gets written, and subsequent writes are unblocked.
+
+### Why a Marker File
+
+`Skill` is not a valid hook matcher — hooks can only match actual tools (Bash, Edit, Write, Read, etc.). Skills are prompt expansions, not tool invocations. So you can't directly detect "was `/plan` invoked?" from a hook. Instead, the skill's own instructions write a marker via Bash, and the hook checks for it.
+
+### The Failure Mode Is Correct
+
+If the model skips the skill's step 1 (the Bash command), the marker never gets written and writes remain blocked. This is the right outcome — if the model isn't following the skill's instructions, it shouldn't be writing to protected files.
+
+### Limitations
+
+- The marker expires (default: 4 hours). Long sessions may need to re-invoke the skill.
+- If the model runs the Bash command without actually following the rest of the skill, the guard is bypassed. This is unlikely — the Bash command is step 1, and the skill's instructions are loaded into context as a unit.
+- The hook fires on every Edit|Write to any file, but only checks files matching the pattern. There's no performance concern — the regex check is a single bash comparison.
+
+### Template
+
+The pattern is generic. See `templates/claude-hooks/skill-guard.sh` — configurable variables at the top: `GUARD_NAME`, `FILE_PATTERN`, `SKILL_NAME`, `MARKER_TTL_SECONDS`. Pair with the quality gate skill template (`templates/skills/quality-gate/SKILL.md`), which includes the marker-writing step.
+
 ## TL;DR
 
-| Instruction type | Normal chat | Agentic mode |
-|---|---|---|
-| Output constraints ("never say X", "use term Y") | Works | Works |
-| Process gates ("read spec before writing") | Works | **Fails silently** |
+| Instruction type | Normal chat | Agentic mode | Fix |
+|---|---|---|---|
+| Output constraints ("never say X", "use term Y") | Works | Works | None needed |
+| Process gates ("read spec before writing") | Works | **Fails silently** | Skill (loads rules at point of use) |
+| Skill invocation ("use /plan before writing plans") | Works | **Fails silently** | Hook (blocks writes without skill) |
 
-The fix isn't better prompting. It's moving process gates out of prose instructions and into mechanical enforcement — skills, hooks, pre-task scripts, anything that makes the prerequisite a code path rather than a behavioral suggestion.
+The fix isn't better prompting. It's moving process gates out of prose instructions and into mechanical enforcement — skills for loading rules, hooks for enforcing skill invocation.
