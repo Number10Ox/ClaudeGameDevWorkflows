@@ -58,6 +58,7 @@ Every design element belongs to exactly one level. When a new idea, question, or
 | "The player should feel X" | **Pillar** | Check if it traces to a thesis. |
 | "What if the game had X mechanic?" | **Hypothesis** | Frame as "If [mechanic], then [pillar] because [reason]." |
 | "X should work this way" | **Design Rule** | Is this a constraint we're choosing to enforce? |
+| "We need to support X" / "Must work without Y" / "Has to be able to Z" | **Requirement** | Label `[req]`, record as `REQ-XX-###` in the system's living doc. See [Requirements Capture](#requirements-capture). |
 | "We're not doing X for now" | **Scope Boundary** | Add to scope boundaries. |
 | "I don't know how X should work" | **Open Question** | Log in Now.md. |
 | "X contradicts Y" | **Tension** | Identify which levels conflict. Resolve at higher level first. |
@@ -83,6 +84,45 @@ For larger projects, tag each design task with a domain layer to prevent mixing 
 If the conversation drifts to another layer, Claude should flag it: *"That's a [System] question — we're in [UI] right now. Log it or switch?"*
 
 > **Adapt this:** Your layers might be different. A board game might split System into Rules/Components/Interaction. A narrative game might split Representation into Writing/Visual/Audio. The point is: declare a layer, stay in it.
+
+---
+
+## Requirements Capture
+
+Requirements are constraints any design and implementation must satisfy. They overlap with **Design Rules** in the hierarchy above, with the added discipline that they are **recorded, numbered, and traceable** so design choices can be checked against them.
+
+Examples: "the narrator must be runnable without a live LLM," "missions must complete without player input."
+
+### Where requirements live
+
+Per-system requirements live in that system's living doc, in a `## Requirements` section near the top. Numbered `REQ-XX-###`, where `XX` is a short system-code prefix you define as each system acquires its own living doc (e.g., `REQ-MG-001` for a MissionGameplay system, `REQ-CM-001` for CampaignMechanics).
+
+Append-only — if a requirement changes, add a new one and mark the old one **superseded by REQ-XX-###**, keeping the original line for audit.
+
+Cross-cutting requirements (rare) live in `GamePillars.md` or `GDD.md`.
+
+> **Adapt this:** The REQ prefix is a convention, not a format constraint. What matters is: requirements have stable IDs, live beside the system they govern, and are append-only.
+
+### Labeling claims in conversation
+
+When a design claim is made, label it with one of:
+
+- `[req]` — a **requirement** (constraint that must hold regardless of design choice)
+- `[game]` — a **game design decision** (choice about player experience)
+- `[tech]` — a **technical design decision** (choice about implementation)
+
+Labels make layer-mixing visible. If a claim is tagged `[game]` but on reflection is `[req]`, the mistag gets caught before the claim settles in the wrong place.
+
+When a `[req]` is identified and confirmed, it is recorded in the relevant living doc's `## Requirements` section **before** design proposals that depend on it are finalized.
+
+### Enforcement
+
+Two leverage points:
+
+- **Upstream (during conversation)** — the labeling discipline above. Claude tags claims as they are made; user corrects mistags.
+- **Downstream (at plan time)** — plans must cite the requirements they satisfy. A `plan-guard.sh` hook can mechanically deny writes to plan files that contain no `REQ-XX-###` references.
+
+Downstream enforcement is the more reliable of the two because it's mechanical. Upstream enforcement is cheap but depends on discipline.
 
 ---
 
@@ -135,15 +175,18 @@ When a design question needs external reference — **research before proposing.
 ## Guardrails Claude Enforces
 
 1. **Classify before discussing.** Every new idea gets tagged with its hierarchy level before analysis begins.
-2. **One active question at a time.** Everything else goes to the backlog.
-3. **Link hypotheses to pillars.** A hypothesis without a pillar connection is unmoored — it might be interesting but it doesn't serve the game.
-4. **Living docs are canon, not vibes.** Changing an invariant requires a Change Proposal with rationale.
-5. **Build forward, don't backfill.** If something seems missing, design it new. Don't resurrect old ideas from git history. If an old idea is worth revisiting, quarantine it as "Candidate Re-adoption (NOT ACTIVE)" first.
-6. **Out-of-scope gets logged, not lost.** Questions outside the current mode/layer get recorded as open questions or future tasks.
-7. **Sessions end with write-back.** Every design session produces:
+2. **Label claims as `[req]` / `[game]` / `[tech]`.** Catches layer-mixing at the point of utterance.
+3. **One active question at a time.** Everything else goes to the backlog.
+4. **Link hypotheses to pillars.** A hypothesis without a pillar connection is unmoored — it might be interesting but it doesn't serve the game.
+5. **Requirements before dependent design.** A `[req]` identified in conversation is recorded in the system's living doc before the design built on it is finalized.
+6. **Living docs are canon, not vibes.** Changing an invariant requires a Change Proposal with rationale.
+7. **Build forward, don't backfill.** If something seems missing, design it new. Don't resurrect old ideas from git history. If an old idea is worth revisiting, quarantine it as "Candidate Re-adoption (NOT ACTIVE)" first.
+8. **Out-of-scope gets logged, not lost.** Questions outside the current mode/layer get recorded as open questions or future tasks.
+9. **Sessions end with write-back.** Every design session produces:
    - Settled decisions → Decision Log entries
    - Updated open questions → Now.md
    - Updated living docs → if any design calls were made this session
+   - Requirements identified → recorded in the relevant living doc's `## Requirements` section
 
 ---
 
@@ -187,6 +230,7 @@ Canonical sources (when stated in two places, the canonical source wins):
 Run this before ending any DESIGN mode session. Takes 2-3 minutes and saves the next session from starting blind.
 
 - [ ] **Decisions logged** — Every decision made this session has an entry in Decisions.md (date, layer, what/why/deprecated/revisit-if)
+- [ ] **Requirements recorded** — Any `[req]` identified this session is captured in the relevant living doc's `## Requirements` section (numbered, append-only)
 - [ ] **Living doc(s) updated** — If any design calls were made, the relevant system doc reflects them
 - [ ] **Now.md current** — Active question reflects where you actually stopped (not where you planned to stop). Open questions backlog includes anything that came up and wasn't resolved
 - [ ] **Mode correct** — If you're switching to EXECUTION next, Now.md says so
