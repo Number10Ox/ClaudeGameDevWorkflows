@@ -192,6 +192,102 @@ When adding rules to multi-narrator systems, contradictions accumulate faster be
 
 ---
 
+## G. AI-ism Failure Modes (Compliance-Invisible)
+
+Sections A-C catch violations: text that breaks a rule. This section catches a different class — text that follows every rule and still reads as LLM-generated. These patterns are what rule-compliance review cannot detect, because they don't violate any rule. They fail by being generic-literary rather than lived-observation.
+
+Triage by pattern. Each comes with a detection test.
+
+### G1. Hollow Comparison
+
+A sentence with the shape of meaningful observation whose comparison doesn't survive a "because" test. "Warmer than a building this size should be." (Building size doesn't determine expected temperature.)
+
+**Detection:** For any comparison ("warmer than X," "older than Y"), complete the sentence with "because ___." If the because-clause is vague, the comparison is hollow.
+
+### G2. Precision Theater
+
+Specific-seeming details (numbers, dates, measurements) that don't constrain interpretation. "A house that was sold thirty years ago." Why thirty? What changes if it's twenty?
+
+**Detection:** Substitution test — would the sentence's meaning change if the specific number/name/year were different? If no, the specificity is decorative.
+
+### G3. Orphaned Causation
+
+"A made/caused/taught B" with no actual mechanism. "Years of working the night shift had taught him to read people." Night shifts don't teach people-reading.
+
+**Detection:** For any causal claim, complete "A causes B because ___." If the mechanism is vague or circular, the causation is orphaned.
+
+### G4. Tautological Observation
+
+A sentence that restates its own premise using synonyms. "There was something deliberate about the way it had been arranged, as though placed with purpose." Deliberate = with purpose.
+
+**Detection:** Strip the second clause. Does the first clause alone lose meaning? If no, the observation is tautological.
+
+### G5. Unanchored Intensifier
+
+A modifier increasing intensity without the concrete detail justifying it. "A deeply unsettling silence." What makes it unsettling? "Deeply" doesn't answer.
+
+**Detection:** "What sensory detail could replace this modifier?" If a concrete observation would strengthen the sentence, the intensifier was a placeholder.
+
+### G6. Sentiment Mismatch
+
+Heightened register applied to content that doesn't earn it. "He carefully set down the perfectly ordinary cup of coffee." Hedge patterns trigger this: *"something about the way...," "not quite what you'd expect...," "almost as if..."*
+
+**Detection:** "What earns this emotional weight?" If the significance is coming from the adjective/adverb rather than the noun/verb, sentiment is mismatched.
+
+### G7. Definition-as-Metaphor
+
+A construction that explains emotional or physical state through the framing *"the way [one] does [X]"* or *"like [someone] who [Y]"*. The definition IS the description — the prose points to a conceptual reference rather than naming a physical observation.
+
+**Examples:**
+- FAIL: *"holding it the way you hold something you want to get right"* — explains emotion through a conceptual category.
+- FAIL: *"She spoke with the kind of care that comes from knowing what's at stake."*
+- PASS: *"She is holding the frame with a surgical stillness."* — physical observation.
+- PASS: *"When she says 'home' the grip on the frame tightens. She says 'home' twice."* — specific physical observation + specific repetition.
+
+**Detection:** Does the sentence answer "how does it feel?" by pointing to a conceptual category (*"the way you do X"*, *"like someone who does Y"*)? If yes, replace with a specific physical or behavioral observation.
+
+### G8. Inference-Disguised-as-Perception
+
+A sentence framed as first-person observation that actually delivers an inference — the evidence is hidden; only the conclusion appears. Related to C1 (too much diagnosis) but specifically in observation-shaped prose.
+
+**Examples:**
+- FAIL: *"It has been here before me."* (Inference about prior presence; evidence unstated.)
+- FAIL: *"The room remembered its occupant."*
+- PASS: *"The chair is warm. No one is here."* (Two perceptions; reader infers.)
+- PASS: *"The seat is warm and nobody is here."*
+
+**Detection:** For any observation-framed claim, ask "what specific sensory evidence does the agent register that produces this?" If the evidence isn't in the sentence, the claim is inference-disguised. Replace with the evidence and let the inference follow.
+
+### G9. Rule-Reflex Phrasing (meta-prose specific)
+
+Applies to prose that instructs an LLM about prose — narrator-prompt files, skill documentation, checklist entries. The pattern is the meta-prose version of the "Add a Rule" reflex: the writer identifies a problem, names it by its inverse, and the negation becomes the teaching.
+
+**Examples:**
+- FAIL: *"The action is the vehicle, not the decoration."* (In a prompt explaining micro-structure — "vehicle" and "decoration" are abstract categories the LLM will over-apply.)
+- FAIL: *"Observation should serve the meaning, not stand alone as atmosphere."*
+- PASS: *"Messages proceed from perception toward meaning. The observation lands before the interpretation."* (Names the positive order.)
+- PASS: *"Lead with what the agent sees. Let the interpretation follow."*
+
+**Detection (meta-prose only):** Does the instruction teach via "X, not Y" where Y is an abstract quality category? If so, rewrite as a direction or a specific shape rather than a category-negation.
+
+**Scope:** Narrator-prompt artifacts, skill docs, checklist entries, design-doc meta-prose. Does NOT apply to narrative content — narrative can legitimately use "not X but Y" for rhetorical contrast.
+
+### G10. Over-Categorization in Prose
+
+Prose that describes a system by enumerating its categories more than is necessary — naming three modes where two would do, labeling phases where describing a direction would be clearer. Categories create the appearance of structure while teaching the LLM to toggle between buckets rather than vary by content.
+
+**Detection:** Count the categories named. Does every category name a distinct observable thing the LLM needs to pick between, or are some decorative labels? If collapsing reduces count without losing information, the original was over-categorized.
+
+**Caveat:** Not every list is over-categorization. Structural-spine elements (beat order, camera modes, recognition-tag vocabulary) are load-bearing — each names a distinct authoring decision. G10 triggers when the categorization IS the teaching rather than a map of decisions.
+
+### Why these need a separate review pass
+
+The rule-compliance review checks "did the text violate a rule?" AI-ism review checks "does the text read as machine-authored despite following the rules?" These are orthogonal checks. A sentence can pass every rule in Sections A-C and still fail G1-G10.
+
+The canonical surfacing case: a narrator-prompt draft used the phrase *"holding it the way you hold something you want to get right"* as a reference example. The phrase passed decorative-atmosphere, passed named-emotion-proxy, passed diagnostic-narration — passed every rule. It still read as definition-as-metaphor (G7) and was caught only by a separate review pass scoped to AI-ism patterns. The review pass is what closed the gap.
+
+---
+
 ## F. Campaign/Seasonal Writing Standards
 
 For games with recurring narrative cycles (daily feeds, seasonal arcs, bulletins).
@@ -233,7 +329,7 @@ Before submitting any narrative text, scan for these common violations:
 
 Reading rules before writing is necessary but **not sufficient**. The writer's context skips violations that a fresh reader catches. In production use, narrative text shipped with raw numbers, diagnosis-over-observation, and missing handler choice costs — all with the rules loaded in the same session.
 
-**The fix: a two-pass enforcement protocol.**
+**The fix: a two-pass enforcement protocol with parallel agents.**
 
 ### Character specs are writing prompts. Checklists are verification.
 
@@ -247,20 +343,34 @@ Writing FROM checklists produces compliance prose — every line exists to satis
 ### Writing Mode
 1. Load **character/voice spec** as the writing prompt — who the character is, not what rules to follow
 2. Write the text as the character in the situation
-3. **Launch a separate review agent** with the checklists (mandatory — not optional, not "if time permits")
+3. **Launch the review agents** (plural — see below) with the checklists (mandatory, not optional)
 
-### Review Mode (the review agent)
-Launch a `general-purpose` Task agent that:
+### Review Mode — parallel two-agent pattern
+
+Compliance and quality check different things. A line can pass every rule and still read as LLM-generic (see Section G). A separate review pass, running in parallel, closes that gap.
+
+Launch TWO `general-purpose` Task agents in parallel (single message with both tool uses):
+
+**Agent 1 — Rule-Compliance Review.** The agent:
 1. Re-reads all source rule docs from disk (fresh context, not inherited from writer)
-2. Checks every piece of text against every rule
+2. Checks every piece of text against every rule in Sections A-F
 3. Reports per rule per text block: **PASS** / **FAIL** / **WARN**
 4. For FAILs: quotes the violating text, names the rule, explains why, suggests a fix
 
+**Agent 2 — AI-ism Review.** The agent:
+1. Re-reads Section G (AI-ism failure modes) from disk
+2. Determines scope — narrative content scans for G1-G8; narrator-prompt or meta-prose artifacts scan for ALL of G1-G10 (RR1/OC1 are meta-prose specific)
+3. Applies the detection test for each pattern against every sentence or construction
+4. Reports findings per pattern: verbatim quote with location, one-sentence reason, 1-2 specific fix candidates (not generic "rewrite this" — proposed replacement prose)
+
 ### Exit criteria
-- Zero FAIL results before presenting text to the user
+- Zero FAIL results from Rule-Compliance agent (including clarity)
+- Zero findings from AI-ism agent
 - WARN results reviewed and accepted or fixed
 
-This is the quality gate skill pattern applied to narrative text. See `skill-authoring.md` for the general pattern.
+An AI-ism finding is never dismissed on rule-compliance grounds. The whole point of the parallel pass is that compliance and quality are orthogonal checks.
+
+This is the quality gate skill pattern applied to narrative text, extended with a second agent. See `skill-authoring.md` for the general pattern.
 
 ---
 
@@ -273,7 +383,7 @@ To create a project-specific narration skill from this framework:
 3. **Define your voice model** — create four-constraint definitions for each agent/narrator
 4. **Add vocabulary rules** — your game's canonical terms and banned synonyms
 5. **Create a `/narration` skill** in `.claude/skills/narration/` that references this framework and adds your local rules
-6. **Wire the review gate** — the skill's SKILL.md should mandate launching a review agent with checklists after writing, not loading checklists before writing
+6. **Wire the review gates** — the skill's SKILL.md should mandate launching TWO review agents in parallel after writing: a rule-compliance agent (checks Sections A-F) and an AI-ism agent (checks Section G). Both agents read from disk for a fresh context; both must pass before presenting text.
 7. **Schedule constraint audits** — see [constraint-audit.md](constraint-audit.md) to prevent rule accumulation from producing compliance prose
 
 See `workflows/skill-authoring.md` for how to build the skill (especially the quality gate pattern).
