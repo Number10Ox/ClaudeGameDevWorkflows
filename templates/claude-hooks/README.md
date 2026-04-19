@@ -56,6 +56,10 @@ The `skill-guard.sh` hook solves a specific failure mode: the model reads "use /
 - The marker is written by a Bash command in the skill's instructions, not by the hook system
 - Relies on Claude following the skill's first instruction (but if it skips that, the hook catches it)
 
+**When to adopt:** pair every non-trivial domain skill with a skill-guard. Skill-only gates depend on the model categorizing the work correctly and choosing to invoke the skill — both are LLM-judgment calls that fail silently. If the skill's constraints matter enough to exist, they matter enough to enforce mechanically.
+
+**Case study — ContextDrift narrator-prompt gate (2026-04).** The `/narration` skill existed for ~2 years of cumulative cross-project work (GrayCorridors → SignalDecay → ContextDrift Alverton → ContextDrift WKRL), covering player-facing prose. It had **no skill-guard**. When narrator-prompt artifacts (files that instruct the LLM how to narrate) needed editing, the work fell outside the skill's taxonomy and the skill didn't fire. Predecessor PromptContract architecture regressed across all 4 iterations, cataloged as the third occurrence of failure-mode B4 (Documenting Lessons Without Changing Behavior; see `~/workspace/ContextDrift-Vault/Process/Claude Failure Modes.md`). The fix — a file-path-matched skill-guard on `src/narrative/prompts/*.ts` plus a `narrator-prompt` mode in the skill — converted the LLM-judgment gate into a mechanical one. Takeaway: skill-only gates are insufficient for work where predecessor architecture must be consulted; skill-guard is the load-bearing version.
+
 See `learnings/process-gates-agentic-workflows.md` for why this category of hook exists.
 
 ### Plan Guard Pattern

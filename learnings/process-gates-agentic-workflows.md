@@ -41,6 +41,20 @@ This isn't about context window size, instruction clarity, or prompt engineering
 
 The first type works in any context: system prompts, MEMORY.md, agentic workflows, wherever. The second type works in normal chat (where there's no execution momentum to interrupt) but fails in agentic mode (where there is).
 
+## The Cross-Project Version
+
+Everything above is within-session failure. There's a longer-horizon version that matters if you use LLM-assisted workflows across multi-project lifetimes: documented lessons decay when the next iteration starts.
+
+Concrete form. Architecture decisions from three predecessor projects — a constraint-based voice framework, a structural narrator-prompt spec, a specific discipline for LLM prose generation — were referenced in the current project's `CLAUDE.md` under "Key Predecessor Decisions." Pointer lines. The files were accessible. Every session loaded the `CLAUDE.md` that referenced them.
+
+Four project iterations in a row, the next narrator-prompt work regressed against the architecture those references pointed at. Each time, the project wrote a new prompt that didn't carry the predecessor's structural discipline. Each time, the regression surfaced only after live evaluation caught prose-quality failures. The failure has a name in our internal catalog: **B4, "Documenting Lessons Without Changing Behavior."** It's easy to recognize in retrospect; hard to prevent by documentation alone.
+
+Why documentation fails even across sessions: a reference line in `CLAUDE.md` is read, but reading it doesn't connect it to an action. If the action is "write a new narrator prompt," the instruction "here's the predecessor architecture" produces no behavioral delta. The model reads the pointer, then proceeds to do what it would have done anyway — same structural shape as within-session process-gate failure, different time horizon.
+
+The within-session fix — hooks that enforce invocation at the point of action — adapts here too. A file-path hook that requires a skill invocation, where the skill's first step is "read the predecessor architecture doc," converts the reference from a pointer into a load-bearing input. The reference wasn't doing any work because nothing mechanical forced it to. Same pattern; different scale.
+
+The general form: any cross-session architecture you want preserved requires a mechanical gate at the point where it's about to be violated, not a reference line in a project-level doc.
+
 ## Fix Level 1: Skills
 
 Convert process gates from behavioral suggestions into mechanical code paths.
@@ -48,6 +62,20 @@ Convert process gates from behavioral suggestions into mechanical code paths.
 Claude Code supports a skill system where invoking a skill forces file reads into context before generation begins. The spec isn't loaded because the model remembers to load it — it's loaded because the skill's execution path requires it. The read is a prerequisite in code, not a suggestion in prose.
 
 The general principle: if you need an agentic LLM to reliably do X before Y, don't write "do X before Y" in a config file. Make X a prerequisite that executes automatically as part of Y's invocation. Treat process instructions the way you'd treat a CI pipeline — enforce them mechanically, don't rely on the developer (or the model) to remember.
+
+## A Second Failure Mode: Taxonomy Drift
+
+Skills fail for a different reason too, one not about invocation momentum. Skills only fire when the model (or a hook) *recognizes the work as belonging to the skill's scope*. That recognition is itself a categorization call — and categorization has gaps.
+
+Concrete example from the project behind this doc. A `/narration` skill existed for roughly two cumulative years of cross-project work, scoped around "writing player-facing text" — mission beats, agent dialogue, feed lines. When it came time to edit the *prompt artifact that instructs the LLM how to write that text*, the skill didn't fire. Writing a narrator prompt isn't writing player-facing text. It's writing instructions for the LLM that will later write player-facing text. Different category. The skill's taxonomy had no slot for it.
+
+The skill wasn't "skipped." It was never in consideration, because the work didn't match its recognized scope. The skill's rules didn't get deprioritized — the rules weren't considered to apply in the first place.
+
+This is a different failure than the one in "What Fails." That one is about execution momentum overriding an in-context instruction. This one is about the gate never being connected to the work at all. Fix Level 1 solves the first failure. It doesn't touch the second — the model has no opportunity to forget to invoke a skill it never recognized as relevant.
+
+The prescription: audit your skills for taxonomy coverage. For every category of work that has non-trivial constraints, ask: "If this work happens, does a skill recognize it?" Answers will surprise you. In our case, the skill's scope had been correct for two years of authoring prose and the gap only surfaced when the work shifted from prose to prompt artifact. The skill didn't regress — the surface area of the project grew past the skill's original taxonomy.
+
+Note the implication: Fix Level 2 (file-path-matched hooks) addresses taxonomy drift *better* than skills alone, because the hook fires on a mechanical path match and doesn't rely on the skill's scope logic at all. This is a point in favor of adopting skill-guard hooks aggressively — they cover both the "forgot to invoke" failure and the "didn't recognize the category" failure with the same mechanism.
 
 ## Fix Level 2: Hooks That Enforce Skill Invocation
 
@@ -81,6 +109,18 @@ If the model skips the skill's step 1 (the Bash command), the marker never gets 
 
 The pattern is generic. See `templates/claude-hooks/skill-guard.sh` — configurable variables at the top: `GUARD_NAME`, `FILE_PATTERN`, `SKILL_NAME`, `MARKER_TTL_SECONDS`. Pair with the quality gate skill template (`templates/skills/quality-gate/SKILL.md`), which includes the marker-writing step.
 
+### Recommendation: Adopt Skill-Guard by Default
+
+Every non-trivial domain skill should have a skill-guard companion from the day the skill is written. Not when a failure surfaces. Day one.
+
+Reasoning. Skills without guards rely on two things: (1) the model recognizes that the work falls under the skill's scope, and (2) the model decides to invoke the skill before acting. Both are LLM-judgment calls that fail silently — you won't notice they're failing unless you have independent signal on the output quality.
+
+The `/narration` skill in the project behind this doc existed for roughly two cumulative years of cross-project work before its skill-guard was written. That whole time, its rules fired only when the model happened to invoke it. On the occasions when the model didn't — because the work was miscategorized (see "Taxonomy Drift" above), or because the model was in execution flow (see "What Fails" above) — the skill had zero effect. Nobody noticed, because the failure looked like "the model produced a sub-par output," not "the skill didn't fire."
+
+The skill-guard pattern is cheap: one short shell script, a marker-writing step in the skill's `SKILL.md`, a line in `settings.json`. The cost of adopting it is lower than the cost of diagnosing its absence. The default should be: write the guard when you write the skill.
+
+Exceptions exist — skills for lightweight convenience (e.g., a shortcut that generates a snippet) don't need mechanical enforcement. But any skill that encodes constraints the project cares about? Guard it.
+
 ## Fix Level 3: SessionStart Hooks for Context Injection
 
 Skills and skill-guard hooks solve the *point-of-use* problem: when the model is about to write a plan, the hook forces the skill to load. But there's a category of process gate that doesn't have a natural trigger point: **session start reads**.
@@ -111,13 +151,39 @@ See `templates/claude-hooks/session-start.sh` for the full template.
 
 If you need context loaded at session start, don't write "read X at session start" in CLAUDE.md. Use a SessionStart hook that injects the content automatically. Reserve CLAUDE.md for output constraints and factual reference — things the model applies as it generates, not things it needs to do before generating.
 
+## What Mechanical Enforcement Can't Solve
+
+Fix Levels 1–3 handle three categories of failure cleanly: point-of-use process gates, skill-invocation reliability, and session-start context loading. There's a fourth category that doesn't yield to any of them: **craft judgment at generation time.**
+
+Examples:
+
+- Is this sentence decorative (fills space without information) or necessary?
+- Does this metaphor land, or is it a plausible-sounding confabulation?
+- Is the rhythm of these three paragraphs varied enough, or monotonous?
+- Is this character voice consistent with the agent's voice spec, or drifting toward a generic LLM register?
+
+None of these are output-filterable — no single token triggers them, they emerge from sequences. None have a clean interrupt point — the model doesn't know it's about to fail, because the failures are pattern-level and visible only on re-read. A process gate that fires "check X before writing" doesn't help here, because X is a judgment the model doesn't possess.
+
+This is the category where the user must remain the catch. An LLM-assisted workflow doesn't eliminate this failure mode; it re-positions where the catching happens. The user moves from "write the prose" to "review the prose." The review is load-bearing: without it, pattern-level failures accumulate invisibly, session after session, and eventually produce output that is technically compliant with every rule and creatively dead.
+
+The honest version of the process-gate story is that mechanical enforcement solves the categorizable parts of the problem and leaves the judgment parts to the user. The temptation — which is itself a failure mode — is to keep adding rules, skills, and hooks in the hope of eventually automating judgment. That approach produces *compliance-shaped output*: technically correct, creatively dead. Our internal failure-modes catalog names this pattern the "Add a Rule" Reflex, and it is the most persistent of the meta-failures because it looks productive.
+
+The correct conclusion isn't that agentic workflows can't do craft work. It's that craft work demands a specific division of labor: mechanical enforcement for the structural parts, human review for the judgment parts. Skipping the latter because the former scaled is how you end up with prose that parses and says nothing.
+
 ## TL;DR
 
 | Instruction type | Normal chat | Agentic mode | Fix |
 |---|---|---|---|
 | Output constraints ("never say X", "use term Y") | Works | Works | None needed |
 | Process gates ("read spec before writing") | Works | **Fails silently** | Skill (loads rules at point of use) |
-| Skill invocation ("use /plan before writing plans") | Works | **Fails silently** | Hook (blocks writes without skill) |
-| Session start reads ("read Now.md at start") | Works | **Fails silently** | SessionStart hook (injects content automatically) |
+| Skill invocation ("use /plan before writing plans") | Works | **Fails silently** | Skill-guard hook (blocks writes without skill) |
+| Session-start reads ("read Now.md at start") | Works | **Fails silently** | SessionStart hook (injects content automatically) |
+| Work outside a skill's recognized scope (taxonomy drift) | Depends | **Fails silently** | Audit skill coverage; add modes or new skills for uncovered work categories; prefer file-path hooks over skill-scope categorization |
+| Predecessor architecture across project iterations | Works when manually consulted | **Fails silently** | File-path hook + skill whose first step is "read the predecessor doc"; pointers in CLAUDE.md don't survive |
+| Craft judgment at generation time (decorative? rhythm? voice drift?) | Depends on model | Depends on model | **No mechanical fix** — user review remains load-bearing |
 
-The fix isn't better prompting. It's moving process gates out of prose instructions and into mechanical enforcement — skills for loading rules, hooks for enforcing skill invocation, and SessionStart hooks for context injection.
+The fix for the upper five rows isn't better prompting. It's moving process gates out of prose instructions and into mechanical enforcement — skills for loading rules, hooks for enforcing skill invocation, SessionStart hooks for context injection, and file-path-scoped guards for work that a skill's scope doesn't recognize.
+
+The fix for the last row is that there is no fix. Craft judgment remains with the user. A workflow that claims otherwise is selling compliance as if it were quality.
+
+The strongest default-on prescription: **every non-trivial domain skill gets a skill-guard the day it's written.** Skills without guards are unreliable in ways you won't notice until an external evaluation catches what should have been caught internally.
