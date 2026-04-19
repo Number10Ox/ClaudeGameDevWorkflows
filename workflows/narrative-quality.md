@@ -374,6 +374,58 @@ This is the quality gate skill pattern applied to narrative text, extended with 
 
 ---
 
+## H. Structural Adoption and the Balloon Dynamic
+
+Observation from cross-project use: when you rewrite a narrator prompt from rule-accretion to structural-spine architecture (beat order + micro-structure + camera modes + recognition tags + few-shot), the resulting output doesn't fail in *fewer* ways — it fails in *different* ways. Across structurally-similar iterations, the failure modes redistribute rather than disappear uniformly.
+
+### What happens on iteration
+
+Categories respond differently to different mechanisms:
+
+- **Scaffold-responsive categories** drop substantially with structural discipline. Abstract-mood prose ("empty-structural-filler"), hedging voice ("hedging-non-commitment"), and abstract-density cascades all drop when the prompt teaches perception-before-interpretation and short denser messages.
+- **Few-shot-responsive categories** drop when the few-shot examples are sharp and specific, rise when they're blurry or contain latent AI-isms. Inventory-opening prose (`room-catalog-open`) and decorative-metaphor prose (`decorative-atmosphere`) live here.
+- **Near-variant categories** drift into the space left by specific bans. Ban "X has the shape of Y" and "not X so much as Y" — the narrator produces "the kind of X that Y" instead. Ban categorical abstract-mood — the narrator produces scene-specific-but-still-tautological observations. Each specific prohibition closes one door and opens an adjacent one.
+
+### The ceiling
+
+The practical ceiling from structural scaffolding alone is roughly **50% reduction** in aggregate trope findings against a rule-accretion baseline. Two iterations of targeted scaffold-plus-example tightening reaches this. Beyond it, returns diminish rapidly.
+
+Further gains past the ceiling require *different mechanisms*, not more inline rule iteration:
+
+1. **Trope-list pattern-family extension.** Instead of banning specific strings, extend the detection trope's description to name the construction shape the LLM is producing. "The kind of X that Y" isn't a string to forbid — it's a family of "definition-by-category" constructions. Catching the family is an author-time or review-time task, not a prompt-instruction task.
+2. **Few-shot anchor quality.** Your few-shot examples are the quality bar. If they contain latent AI-isms (definition-as-metaphor constructions, hedge syntax), they calibrate the narrator to those patterns. Fixture/reference-content review for AI-isms (see Section G) is prerequisite work.
+3. **Authored-content human review.** Some construction-shape detection is judgment the automated pass can't do reliably. Budget a review step for content review, separate from the writer and separate from the rule-compliance agent.
+4. **Model-level intervention.** Different model generations, different prompting techniques (extensive few-shot, chain-of-reasoning, retrieval-augmented examples). These are bigger interventions than a prompt edit.
+
+### Why more inline iteration is counterproductive past the ceiling
+
+Each inline iteration past the ceiling:
+- Adds a specific ban for the near-variant that just surfaced, growing the constraint count (the B1 "Add a Rule" reflex failure mode).
+- Trains the LLM toward the next adjacent construction — the variant one step further from the banned pattern.
+- Produces diminishing reduction per iteration while increasing the risk of compliance-shaped output (the B2 failure mode).
+- Erodes the structural scaffold by burying it under accreted rules.
+
+### How to tell you're at the ceiling
+
+Five signals:
+
+1. **Adjacent-variant surfacing.** Each iteration's regressions are near-variants of the patterns the previous iteration banned. "The X has the shape of Y" ban surfaces "the kind of X that Y"; that ban would surface "the X that Y does" next.
+2. **Category stability on core scaffold work.** The categories the scaffold was designed to address (abstract-mood, hedging, density) are stable at their improved counts. Further iteration isn't moving them.
+3. **Hard-constraint enforcement holds.** Lexical bans (em-dashes, banned vocabulary) stay at zero. If those start slipping, the rules are being crowded out by accretion.
+4. **The prompt's own prose quality is starting to degrade.** Rule-reflex phrasing ("X, not Y") creeping back in, over-categorization of modes, definition-as-negation constructions — these are AI-isms in the prompt itself (see Section G RR1 / OC1) that indicate the writer (human or LLM) has been captured by the compliance-shaped approach.
+5. **The "just one more ban" feeling.** If each review produces "add a ban for this specific phrase," and the ban list has grown by 2-3 entries per iteration, you're past the ceiling.
+
+### Practical guidance
+
+- **Plan iteration budget up front.** One to two iterations past the initial rewrite is the realistic productive range. Budget for that; don't iterate past it chasing diminishing returns.
+- **Document the ceiling finding.** When you hit it, write the outcome in your project's decisions doc. Name which categories responded to scaffold, which to few-shot, which remain as near-variants. Future prompt work benefits from knowing the distribution, not just the aggregate.
+- **Move to different mechanisms.** Extend the trope list to name construction-shape patterns. Scrub fixture-level AI-isms (Section G + your project's `/narration review` AI-ism agent). Schedule review passes for construction-shape detection. Each of these addresses failures the prompt can't catch.
+- **Don't roll back a structural rewrite because the reduction is ~50%.** A 50% reduction on trope findings plus rule-count reduction plus cleaner per-beat prose is a real win. Partial wins that redistribute failure modes are the expected outcome of this architectural move; the wins on scaffold-responsive categories carry forward even when few-shot-responsive categories don't fully close.
+
+**Source:** Context Drift narrator-prompt-structural-spine plan (2026-04-19). Baseline 14 → rewrite iteration 1 11 → rewrite iteration 2 7 (50% reduction). Three categories eliminated (abstract-density, hedging, npc-behavioral-catalog to zero); two categories held at baseline (decorative-atmosphere, diagnostic-narration); two categories redistributed (room-catalog-open eliminated in iter 2 via targeted few-shot; empty-structural-filler picked up near-variants). Full trajectory documented in ContextDrift `Docs/Decisions.md` §D-070.
+
+---
+
 ## Adapting for Your Project
 
 To create a project-specific narration skill from this framework:
