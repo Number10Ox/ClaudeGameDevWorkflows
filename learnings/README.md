@@ -355,6 +355,16 @@ A migration plan proposed building a `useScriptRunner` hook from scratch to tran
 
 ---
 
+### 2026-04-20 (Context Drift): Plans without specs produce systems without identity
+
+A plan-writing skill enforced acceptance criteria, pillar alignment, red team, and hold-out review. It did not ask "does a spec exist for what this plan builds?" A mission-generator framework was built through multiple plans over weeks — each compliant, each reviewed, each implemented cleanly — with no unifying spec. Result: terminology drift ("template" applied to runtime arguments rather than authored artifacts), a distinctness test measuring whether one mission differed from itself, and five "variations" that each had an identical ~400-word anomaly block because they were one mission rendered five ways. The skill fired. The reviewers passed. The system had no identity because the identity was never written down.
+
+**Rule extracted:** A skill enforces what it checks. When a plan-writing skill's checklist omits "does the deliverable have a spec?", plans implement the author's implicit mental model — which drifts session to session. Make "spec exists and is referenced" a mechanical prerequisite at the start of the skill, not a checklist item at the end.
+
+**Workflow impact:** Added [plans-without-specs.md](plans-without-specs.md) to Learnings. Added Design Spec Prerequisite section to execution-mode.md. Updated claude-md.md template and plan-with-team.md command template to include the spec-first prerequisite.
+
+---
+
 ### 2026-04-04 (Context Drift): Audit authored content for extractable structure
 
 The Alverton fixture narrator audit found that every useful narrative line restated as a structured intelligence item (category + factual text). Half the lines were stage direction or redundant with the agent output. When authored content has a clear structural role, author the structure first and add prose only where it earns its place.

@@ -61,6 +61,28 @@ Typical checkpoints:
 
 ---
 
+## Design Spec Prerequisite
+
+Every plan implements a design spec. A plan does not replace or constitute its own spec. A plan-writing skill should block when no spec is named.
+
+**Two allowed spec locations:**
+
+- **Living doc** — `Docs/Design/<System>.md` (or your project's equivalent). Use when the system already has a living doc and the plan extends it. The plan names the doc and the section(s) it implements.
+- **Temporary working spec** — `process/spec-<name>.md` (or your project's equivalent). Use for new systems, or for any first touch where a living doc does not yet exist. The working spec is terse: it names the system, states its inputs and outputs, and describes what a correct implementation produces. It does not have to be long; it does have to exist. After implementation, a working spec for a new system becomes the system's living doc (see New System Flow step 7 above).
+
+**Flow:**
+
+1. User names a spec. If the spec exists, the plan-writing skill proceeds.
+2. If no spec exists, the next turn is a spec-writing turn, not a plan-writing turn. Draft the working spec first.
+3. The plan's mandatory `## Design Spec` section references the path and states in one line what portion of the spec this plan implements.
+4. Red team and hold-out reviewers read the spec. A plan whose spec is missing or does not cover the build is **FIX** at review.
+
+**Why this exists:** Systems built through a series of plans without a unifying spec drift. The terminology used in plans and code diverges from what the system is supposed to be; tests measure the wrong thing because "what the system is supposed to do" was never fixed; weeks of work accrete on a foundation that was never specified. The rule exists to make the spec load-bearing rather than optional, so that the spec catches drift before it compounds.
+
+> **Adapt this:** Paths are conventions. Use whatever fits your project. The principle is: a plan names an existing spec file, and that spec describes what the plan proposes to build.
+
+---
+
 ## Execution Readiness Gate
 
 Before switching from DESIGN to EXECUTION mode, check that the slice is fully specified. If any of these fail, stay in DESIGN and resolve them first.

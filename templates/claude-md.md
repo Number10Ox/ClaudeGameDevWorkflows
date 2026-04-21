@@ -64,7 +64,7 @@ Check `Docs/Now.md` for the current mode:
 [List your project's quality gate skills here. Examples:]
 
 - **Before writing player-facing text**, invoke `/narration`. Loads narrative rules, banned vocabulary, voice constraints, and the review gate.
-- **Before writing an implementation plan**, invoke `/plan`. Loads acceptance criteria checks, pillar alignment, and red team spec.
+- **Before writing an implementation plan**, invoke `/plan`. Loads acceptance criteria checks, pillar alignment, red team spec, and the design-spec prerequisite (no plan without a named existing spec file — living doc or working spec at `process/spec-<name>.md`).
 - **After making visual/UI changes**, invoke `/visual`. Loads design system rules and requests a screenshot from the user before sign-off.
 
 > **Adapt this:** Create quality gate skills for whatever your project's recurring quality failures are. If you keep shipping the same kind of bug, that's a skill waiting to be written.

@@ -48,10 +48,18 @@ Before planning, understand what exists:
 - What tests exist? What patterns do they follow?
 - Are there dependencies that need to be in place?
 
-### 3. Write the Plan
+### 3. Verify the Design Spec Exists
+Before writing the plan, confirm a design spec exists for the deliverable. A plan implements a spec — it does not replace one. Accept either:
+- **Existing living doc** (`Docs/Design/<System>.md` or your project's equivalent) — plan extends it
+- **Temporary working spec** (`process/spec-<name>.md`) — written first if the system is new
+
+If no spec exists, stop. The next turn is a spec-writing turn, not a plan-writing turn. Draft the working spec first. See the Design Spec Prerequisite section in your workflow docs (e.g., `Docs/workflow-engineering.md`).
+
+### 4. Write the Plan
 Create deliverable files:
 - **`Docs/deliverables/D{N}-acceptance.md`** — acceptance criteria (if not already written)
 - **`Docs/deliverables/D{N}-plan.md`** — the implementation plan:
+  - **Design Spec** — path to the spec file; one line on what portion this plan implements
   - **Deliverable/Objective** — what this delivers
   - **Acceptance Criteria** — reference to D{N}-acceptance.md
   - **Relevant Files** — existing (to read/modify) and new (to create)
@@ -61,10 +69,10 @@ Create deliverable files:
 
 For standalone work (not tied to a deliverable), use `process/plans/plan-<name>.md` instead.
 
-### 4. Present the Plan
+### 5. Present the Plan
 Tell the user the file path so they can review in their editor. Do NOT proceed to orchestration until approved.
 
-### 5. Orchestrate the Team
+### 6. Orchestrate the Team
 After approval, create tasks and assign them:
 - **builder** (`.claude/agents/team/builder.md`): All implementation work
 - **validator** (`.claude/agents/team/validator.md`): Read-only verification
@@ -74,7 +82,7 @@ Typical pattern per task:
 2. Validator verifies (read-only)
 3. If validator finds issues → new builder task to fix → validator re-verifies
 
-### 6. Report
+### 7. Report
 When all tasks pass validation:
 - Summarize what was built
 - Map acceptance criteria to passing tests
